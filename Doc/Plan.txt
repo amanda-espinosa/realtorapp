@@ -1,0 +1,27 @@
+Website for a realtor company
+
+1- Set up hosting, domain, SSL.
+
+2- Source code using git 
+
+3- Sections to include:
+	-Home
+	-About us and Reviews
+	-Galery (Application)
+	-Contact
+	-Blog
+
+	APPLICATION (houses for sell)
+		FRONTEND:
+		-Design list of houses for sell (appearance-Rene)
+		-List elements that appear in the sample websites (to create our own table for database)
+		-Look for a library
+		
+		
+		BACKEND:
+		-Design table for the database as complete as possible(Address[one row for each element], price[changes in the price], number of rooms, number of bathrooms, garage? garages size, HOA?, HOA cost, state [for sell, for rent, sold, pending])
+			
+		
+		
+		
+		
