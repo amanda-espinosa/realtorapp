@@ -21,6 +21,9 @@ Website for a realtor company
 		BACKEND:
 		-Design table for the database as complete as possible(Address[one row for each element], price[changes in the price], number of rooms, number of bathrooms, garage? garages size, HOA?, HOA cost, state [for sell, for rent, sold, pending])
 			
+			
+	Probando
+	
 		
 		
 		
