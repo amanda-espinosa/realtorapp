@@ -1,0 +1,104 @@
+House information for application:
+	Preview:
+		0.	Original price: integer
+		1.	Current price: integer
+		2.	Number of rooms: integer
+		3.	Number of bathrooms: integer
+		4.	area (square feet): integer
+		5.	Address. Number of the house: integer
+		6.	Address. Street: string
+		7.	Address. City: string
+		8.	Address. State: string
+		9.	Address. zip: integer
+		10.	for sale?: boolean
+		11.	for rent?: boolean
+		12.	For sale by: string (owner, realtor)
+		13.	picture: media
+		14.	garage?: boolean
+		15.	garage spot number:	integer
+		16.	pool?: boolean
+		17.	HOA?: boolean
+		18.	HOA cost: integer
+		19.	Description: string
+		20. Add-to-favorite button (heart shape)
+		21. Drop-down menu: compare, share, hide, see similar homes.
+		22. Main section: Map (Google API)
+			draw tool(remove outline button), options(map details: schools, amenities, transit, bike, flood, hidden)
+			map types (street, satellite), zoom in/zoom out
+			
+	Pop-up window:
+		0. pictures: media
+		1. Current price: integer
+		2.	Address. Number of the house: integer
+		3.	Address. Street: string
+		4.	Address. City: string
+		5.	Address. State: string
+		6.	Address. zip: integer
+		7.	Number of rooms: integer
+		8.	Number of bathrooms: integer
+		9.	area (square feet): integer
+		10. monthly price estimate: integer ($1400/mo)
+		11. get pre-qualified link
+		
+		12. built in year: integer
+		13. number of acres: integer
+		14. price by square feet ($250/sqft): integer
+		15.	HOA?: boolean
+		16.	HOA cost: integer
+		17. Request tour button
+		18. Request tour button. Schedule a tour: form
+		19. Contact agent button
+		20. Contact agent button. Form (name, phone, email, message, "I want financing information" checkbox)
+		21. Description: string
+		22. Days posted on zillow: integer
+		23. views: integer
+		24. number of saves: integer
+		25. map
+			Facts and features section (unordered list)
+				number of bethrooms: integer
+				number of bathrooms: integer
+				heating type: string
+				cooling type: string
+				appliances included: string
+				features. flooring type: string
+				features. basement?: boolean
+				features. fireplace?: boolean
+				interior area. house area: integer
+			Property
+				number of levels: integer
+				parcel number: integer
+				special conditions: string
+				size lot (acres): integer
+			Construction:
+				home type: string
+				property subtype: string
+				materials: string
+				new construction?: boolean
+				year built: integer
+			Utilities:
+				sewer type: string
+				water type: string
+			Comunity & HOA
+				location: string
+				HOA?: boolean
+			Financing & listing details
+				price per square foot: integer
+				tax assessed value: integer
+				annual tax amount: integer
+				date on market: date
+			Calculate monthly payment section
+				-table (Check Zillow with Paquito)
+					Principal & interest
+					Mortgage insurance
+					Property taxes
+					Home insurance
+					HOA fees
+					Utilities
+			Nearby schools
+				School name: string
+				school grades: string
+				school distance: integer
+			Similar homes section:
+				list of 20 similar houses
+			Footer (common footer for all pages)
+		
