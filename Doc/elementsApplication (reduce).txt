@@ -1,18 +1,11 @@
 House information for application:
-	Preview Frontend:
-		1.	Current price: float
-		2.	Number of rooms: float
-		3.	Number of bathrooms: float
-		4.	area (square feet): float
-		5.	state: integer (for rent 0, for sale 1, pending 2, sold 3, out of market 4)
-		6.	Address. Street: string
-		7.	Address. apartment: string
-		8.	Address. City: string
-		9.	Address. State: string
-		10.	Address. zip: integer
-		11.	picture: media
-
-			
+	Preview:
+		1.	Current price: integer		id = "price"		
+		2.	Number of rooms: integer	id = "rooms"
+		3.	Number of bathrooms: integer	id = "bathrooms"
+		4.	state: integer			id = "state"
+		5.	picture: place holder		id = "picture"
+		
 	Pop-up window:
 		0. pictures: media
 		1. Current price: integer

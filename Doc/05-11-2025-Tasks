@@ -1,0 +1,255 @@
+05/11/2025
+
+BACKEND - Amanda
+
+MAKE the php file work
+READ https://www.digitalocean.com/community/tutorials/how-to-create-a-new-user-and-grant-permissions-in-mysql 	done!
+
+Database Setup & User Management
+Create Database:
+	CREATE DATABASE realtor_project;	OK
+
+Create MySQL Users:		OK
+	CREATE USER 'sammy'@'localhost' IDENTIFIED BY 'password';
+	CREATE USER 'amanda'@'localhost' IDENTIFIED BY 'mariadbaer';
+
+Grant Privileges:	OK
+	GRANT ALL PRIVILEGES ON realtor_project.* TO 'sammy'@'localhost' WITH GRANT OPTION;
+	GRANT ALL PRIVILEGES ON realtor_project.* TO 'amanda'@'localhost' WITH GRANT OPTION;
+
+Apply Changes:	OK
+	FLUSH PRIVILEGES;
+
+MySQL Commands
+	Switch Database:
+		USE database_name;
+
+View All Records:	OK
+	SELECT * FROM table_name;
+
+Insert Record:
+	INSERT INTO table_name (column1, column2, ...) VALUES (value1, value2, ...);
+
+Delete Record:
+	DELETE FROM table_name WHERE condition;
+
+Update Record:
+	UPDATE table_name SET column1 = value1, column2 = value2 WHERE condition;
+
+PHP Development Tips
+	Table Creation:	OK
+		Not necessary in PHP; handle via MySQL.
+
+Select All Columns:	
+	SELECT * FROM table_name;
+
+Default Values:	OK
+	Define default values during table creation.
+
+Command Line Testing:
+	php path/to/file.php
+		Test commands one at a time, commenting/uncommenting as needed.
+
+FRONTEND RENE: 
+House Information Structure
+
+Frontend Display:
+
+	Current Price: float
+	Number of Rooms: float
+	Number of Bathrooms: float
+	Area (sq ft): float
+	State: integer
+		0: For Rent
+		1: For Sale
+		2: Pending
+		3: Sold
+		4: Off Market
+	Address:
+		Street: string
+		Apartment: string
+		City: string
+		State: string
+		Zip: integer
+	Picture: media
+	
+Popup Window Details:
+
+	Gallery: Images of the property
+	Price: Display current price
+	Address:
+		Street: string
+		Apartment: string
+		City: string
+		State: string
+		Zip: integer
+	Number of Rooms: integer
+	Number of Bathrooms: integer
+	Number of Acres: float
+	Area (sq ft): integer
+	Price per sq ft: calculated
+	Year Built: integer
+	HOA: Yes/No
+	HOA Cost: float
+	Contact Agent Button: Link to contact page
+	Description: Detailed property description
+	Days Posted: integer
+	Number of Views: integer
+	Map: Interactive map location
+	Home Type: Array of types (e.g., Single Family, Condo)
+	Facts and Features:
+		Heating Type: string
+		Cooling Type: string
+		Appliances Included: string
+		Flooring Type: string
+		Basement: boolean
+		Fireplace: boolean
+	Property Details:
+		Number of Levels: integer
+		Parcel Number: integer
+	Construction Details:
+		Home Type: string
+		Property Subtype: string
+		Materials: string
+	Utilities:
+		Sewer Type: string
+		Water Type: string
+	Nearby Schools:
+		School Name: string
+		Grades: string
+		Distance: integer (in miles)
+
+
+CSS & Layout Tasks
+
+Thumbnail Consistency:
+	Ensure all house thumbnails have consistent dimensions and are properly aligned.
+
+Flexbox Layout:
+	Use Flexbox to maintain uniform container sizes, even with varying numbers of houses.
+
+Property Height:
+	Force property container height to 215px for uniformity.
+
+Next Steps
+	Sketch General Layout:
+Plan the overall display of all properties.
+	Popup Window Design:
+	Design the detailed view popup with all property information.
+
+
+
+05/11/2025
+Amanda:
+
+Que funcione php file
+CREATE DATABASE realtor_project;
+
+Estudiar sistema de usuario de mysql
+Crear usuario de Mysql con acceso a la base de datos de las casas, que tenga todos los provolegios
+
+CREATE USER 'sammy'@'localhost' IDENTIFIED BY 'password';
+CREATE USER amanda@localhost IDENTIFIED BY 'mariadbaer';
+
+GRANT ALL PRIVILEGES ON 'database-name'.'tableName' TO 'sammy'@'localhost' WITH GRANT OPTION;
+GRANT ALL PRIVILEGES ON realtor_project.* TO amanda@localhost WITH GRANT OPTION;
+
+FLUSH PRIVILEGES;
+
+leer articulo 
+
+Nombrar base de datos segun lo que vamos a trabajar
+
+En el php la creacion de la tabla no es necesario
+
+Comandos mysql:
+USE database name;
+SELECT * FROM tablename;
+INSERT INTO
+DELETE	(Where)
+UPDATE (Where)
+
+
+
+definir default values en la creacion de la tabla
+en el select de php tengo que seleccionar todo... usar *
+
+php command line Probar si funciona el archivo php probando un comando a la vez, comentando segun vaya probando.
+php path/file.php
+
+
+
+Rene TAREAS
+make America great again!
+Trabajar en el css para que las miniaturas de las casas siempre tenga las dimensiones correctas y las distribuya correctamente.
+Estudiar como hacer que los contenedores property mantengan el mismo tamano aunque tenga diferente cantidad de casas en el contenedor de boxleft (flexbox)
+Preparar visualizacion de miniaturas con la lista de 11.
+
+Forzar height de property a 215px
+
+
+House information for application:
+	Preview Frontend:
+		1.	Current price: float
+		2.	Number of rooms: float
+		3.	Number of bathrooms: float
+		4.	area (square feet): float
+		5.	state: integer (for rent 0, for sale 1, pending 2, sold 3, out of market 4)
+		6.	Address. Street: string
+		7.	Address. apartment: string
+		8.	Address. City: string
+		9.	Address. State: string
+		10.	Address. zip: integer
+		11.	picture: media
+	
+Empezar a trabajar en la visualizacion general de todas las propiedades de la casa (sketch).
+Trabajar en la visuacion general del pop-up con toooda la informacion
+
+Pop-up window:
+pictures
+galery
+price
+address. Street
+address.apartment
+Address. City
+Address. State
+Address. zip
+Number of rooms
+Number of bathrooms: integer
+number of acres
+area (square feet): integer
+price by square feet ($250/sqft)
+built in year: integer
+HOA
+HOA cost
+Contact agent button (enlace para la pagina de contacto)
+Description
+Days posted on zillow
+Number of Views
+map
+home type (array)
+			Facts and features section (unordered list)
+				heating type: string
+				cooling type: string
+				appliances included: string
+				features. flooring type: string
+				features. basement?: boolean
+				features. fireplace?: boolean
+			Property
+				number of levels: integer
+				parcel number: integer
+			Construction:
+				home type: string
+				property subtype: string
+				materials: string
+			Utilities:
+				sewer type: string
+				water type: string
+			Nearby schools
+				School name: string
+				school grades: string
+				school distance: integer
+		
+
+
+

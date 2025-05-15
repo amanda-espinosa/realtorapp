@@ -15,7 +15,7 @@ Website for a realtor company
 		FRONTEND:
 		-Design list of houses for sell (appearance-Rene)
 		-List elements that appear in the sample websites (to create our own table for database)
-		-Look for a library
+		-Look for a library javascript open source that provides a galery.
 		
 		
 		BACKEND:

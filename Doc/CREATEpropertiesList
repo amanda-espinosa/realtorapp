@@ -1,24 +1,15 @@
-CREATE TABLE PropertiesList (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    original_price INT,
-    current_price INT,
-    number_of_rooms INT,
-    number_of_bathrooms INT,
-    area_sqft INT,
-    address_number INT,
-    address_street VARCHAR(50),
-    address_city VARCHAR(50),
-    address_state VARCHAR(50),
-    address_zip INT,
-    for_sale BOOLEAN,
-    for_rent BOOLEAN,
-    garage BOOLEAN,
-    garage_spot_number INT,
-    pool BOOLEAN,
-    hoa BOOLEAN,
-    hoa_cost INT,
-    description TEXT,
-    favorite BOOLEAN DEFAULT FALSE
-);
+DROP TABLE IF EXISTS properties_list;
 
-Las fotos de agregan a la tabla?
+CREATE TABLE properties_list (
+    id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    price FLOAT UNSIGNED DEFAULT 0,
+    number_of_rooms TINYINT UNSIGNED DEFAULT 0,
+    number_of_bathrooms FLOAT UNSIGNED DEFAULT 0,
+    area_sqft FLOAT UNSIGNED DEFAULT 0,
+    property_state TINYINT UNSIGNED NOT NULL,
+    address_street VARCHAR(50) DEFAULT '',
+    address_apartment VARCHAR(10) DEFAULT '',
+    address_city VARCHAR(50) DEFAULT '',
+    address_state VARCHAR(50) DEFAULT '',
+    address_zip MEDIUMINT UNSIGNED DEFAULT 0
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
