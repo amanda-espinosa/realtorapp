@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../css/pop.css">
+    <link rel="stylesheet" href="../css/jquery.fancybox.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+        integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+        crossorigin=""/> 
+    <script src="../js/jquery-3.7.1.js"></script>
+    <script src="../js/jquery.fancybox.min.js"></script>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+     integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+     crossorigin=""></script>
+    <script src="../js/pop.js"></script>
+    <title>Pop-up</title>
+</head>
+<body>
+    <nav>
+        <!-- Lado izquierdo -->
+        <div id="nav-left">
+        <a href="index-testing_preview_layout.html" class="btn btn-secondary" id="back-button">BACK TO PREVIEW</a>
+        </div>
+        <!-- centrado -->
+        <div id="nav-logo">
+            <img src="../img/Realtor.png" id="logo" alt="">
+        </div>
+        <!-- <a> tag -->
+        <div id="nav-right">
+        <div id="share-icons">
+            <a id="facebook-share" href="#" target="_blank" title="Share on Facebook"><img src="../img/facebook.png" alt="share thru facebook"></a>
+            <a id="whatsapp-share" href="#" target="_blank" title="Share on WhatsApp"><img src="../img/whatsapp.png" alt="share thru whatsapp"></a>
+            <a id="email-share" href="#" title="Share via Email"><img src="../img/email.png" alt="share thru email"></a>
+    </div>
+        </div>
+    </nav>
+    <div class="page-container">
+    <main id="mainSection">
+        <div id="popUpContainer">
+            <div id="gallery">
+                <div id="mainPhotoContainer"></div>    
+                <div id="galleryRight"></div>
+            </div> 
+            <div id="property">
+                <div id="info">
+                    <div id="rooms">
+                        <h1>$</h1>
+                        <div id="price"></div>
+                        <label for="number_of_rooms">Number of rooms: </label>
+                        <div id="number_of_rooms"></div>
+                        <label for="number_of_bathrooms">Number of bathrooms: </label>
+                        <div id="number_of_bathrooms"></div>
+                        <div id="area_sqft"></div>
+                        <h1>sqft</h1>
+                    </div>
+                    <div id="address">
+                        <div id="property_state"></div>
+                        <div id="address_street"></div>
+                        <div id="address_apartment"></div>
+                        <div id="address_city"></div>
+                        <div id="address_state"></div>
+                        <div id="address_zip"></div>
+                    </div>
+                    <div id="webData">
+                        <div class="daysOnWebSite">
+                        </div>
+                        <div class="views">
+                        </div>
+                    </div>
+                    <div id="description"></div>
+                </div>
+                <div id="formContainer">
+                    <form action="../../backend/php/sendform.php" method="post">
+                        <label for="name">Name:</label><br>
+                        <input type="text" name="name" id="name"><br><br>
+                        <label for="email">Email:</label><br>
+                        <input type="text" name="email" id="email"><br><br>
+                        <label for="phone">Phone:</label><br>
+                        <input type="text" name="phone" id="phone"><br><br>
+                        <label for="comments">Comments:</label><br>
+                        <textarea name="comments" id="comments" rows="5" cols="35"></textarea><br><br>
+                        <label for="appointment">Schedule your tour:</label> <br>
+                        <input type="datetime-local" id="appointment" name="appointment"><br><br>
+                        <input type="submit" id="formSubmitButton" value="Contact Agent">
+                    </form>
+                </div>
+            </div>
+            <div id="map">               
+            </div>
+
+            <div id="features">
+                <div id="section1">
+                    <div id="interior">
+                    <label for="heating_type">Heating type: </label>
+                    <div id="heating_type">
+                    </div>
+                    <label for="cooling_type">Cooling type: </label>
+                    <div id="cooling_type">
+                    </div>
+                    <label for="appliances">Appliances: </label>
+                    <div id="appliances">
+                    </div>
+                    <label for="flooring_type">Flooring type: </label>
+                    <div id="flooring_type">
+                    </div>
+                    <label for="basement">Basement: </label>
+                    <div id="basement">
+                    </div>
+                    <label for="fireplace">Fireplace: </label>
+                    <div id="fireplace">
+                    </div>
+                </div>
+                <div id="propertyFacts">
+                    <label for="levels">Number of levels: </label>
+                    <div id="levels">
+                    </div>
+                    <label for="parcel_number">Parcel number: </label>
+                    <div id="parcel_number">
+                    </div>
+                    <label for="special_conditions">Special conditions: </label>
+                    <div id="special_conditions">
+                    </div>
+                    <label for="size_lot">Lot size: </label>
+                    <div id="size_lot">
+                    </div>
+                    <label for="price_per_squarefeet">Price per sqft</label>
+                    <div id="price_per_squarefeet">
+                    </div>
+                </div>
+                <div id="construction">
+                    <label for="built_in_year">Built in year: </label>
+                    <div id="built_in_year">
+                    </div>
+                    <label for="home_type">Home type: </label>
+                    <div id="home_type">
+                    </div>
+                    <label for="materials">Materials: </label>
+                    <div id="materials">
+                    </div>
+                </div>
+            </div>
+                <div id="section2">
+                    <div id="utilities">
+                        <label for="sewer_type">Sewer type: </label>
+                        <div id="sewer_type">
+                        </div>
+                        <label for="water_type">Water type: </label>
+                        <div id="water_type">
+                        </div>
+                    </div>
+                    <div id="communityHoa">
+                        <label for="hoa_cost">HOA cost: </label>
+                        <div id="hoa_cost">
+                        </div>
+                        <label for="location">HOA location: </label>
+                        <div id="location">
+                        </div>
+                    </div>
+                    <div id="nearbySchools">
+                        <label for="school_name">School name: </label>
+                        <div id="school_name">
+                        </div>
+                        <label for="school_grade">School grade: </label>
+                        <div id="school_grade">
+                        </div>
+                        <label for="school_distance">School distance: </label>
+                        <div id="school_distance">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="similarHomes">
+                <p>Similar homes section</p>
+            </div>
+        </main>
+        <footer>
+            <div class="footer-section">
+                <h3>DeveloPacos</h3>
+                <p>Your trustworthy Realtor</p>
+            </div>
+
+            <div class="footer-section">
+                <h3>Links</h3>
+                <ul>
+                    <li><a href="#">Home</a></li>
+                    <li><a href="#">Properties</a></li>
+                    <li><a href="#">About us</a></li>
+                    <li><a href="#">Contact</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-section">
+                <h3>Contact</h3>
+                <p>Email: contacto@developacos.com</p>
+                <p>Phone: +1 123 456 789</p>
+                <p>Address: Vero Beach, Indian River County. Florida </p>
+            </div>
+
+            <div class="footer-section">
+                <h3>Follow us</h3>
+                <div class="social-icons">
+                    <a href="#">🌐</a>
+                    <a href="#">📘</a>
+                    <a href="#">📷</a>
+                    <a href="#">🐦</a>
+                </div>
+            </div>
+        </footer>
+        <div class="footer-bottom">
+            &copy; 2025 RealtorPacombeles. All rights reserved..
+        </div>  
+    </div>
+</body>
+</html>

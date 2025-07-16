@@ -2,7 +2,10 @@
   box-sizing: border-box;
   padding: 0;
   margin: 0;
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: "Montserrat", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 400;
+  font-style: normal;
 }
 
 html {
@@ -15,6 +18,7 @@ body {
 
 .box-left {
   width: 50%;
+  height: 100%;
   padding: 20px;
   border: 1px solid #ccc;
   border-radius: 3px;
@@ -22,33 +26,28 @@ body {
   grid-template-columns: repeat(2, 1fr);
   gap: 0px;
   background-color: #f7f7f7;
-  display: flex;
   display: grid;
-  float: left;
-
-
 }
 
 .box-right {
   width: 50%;
+  height: 100%;
   padding: 20px;
   border: 1px solid #ccc;
   border-radius: 1px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   background-color: #f7f7f7;
-  float: right;
 }
 
-.img-right {
+#map {
   width: 100%;
   height: 100%;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-  object-fit: cover;
-  object-position: center;
 }
 
 .property {
   height: 270px;
+  width: auto;
   margin: 20px;
   padding: 10px;
   border: 1px solid #ccc;
@@ -58,43 +57,33 @@ body {
 .picture {
   height: 60%;
   width: 100%;
-  background-color: green;
-  background-size: 100% 100%;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
 }
 
 .price {
   height: 19%;
-  background-color: rgb(243, 228, 64);
   font-size: 25px;
 }
 
-.rooms {
+.rooms,
+.bathrooms,
+.area,
+.state {
+  padding: 0;
   height: 10%;
   width: 15%;
-  background-color: pink;
   float: left;
-}
-
-.bathrooms {
-  height: 10%;
-  width: 15%;
-  background-color: violet;
-  float: left;
-}
-
-.area {
-  height: 10%;
-  width: 25%;
-  float: left;
-  background-color: rgb(220, 45, 152);
+  font-size: 12px;
 }
 
 .state {
   height: 10%;
   width: 45%;
-  background-color: rgba(0, 204, 255, 0.534);
-  float: inline-end;
+  margin-left: 30px;
   float: left;
+  font-size: 14px;
 }
 
 .street {
@@ -102,7 +91,6 @@ body {
   padding: 5px;
   height: 10%;
   width: auto;
-  background-color: rgb(122, 122, 190);
   float: left;
   font-size: 14px;
 }
@@ -112,7 +100,6 @@ body {
   padding: 5px;
   height: 10%;
   width: auto;
-  background-color: rgb(138, 229, 199);
   float: left;
   font-size: 14px;
 }
@@ -122,7 +109,6 @@ body {
   padding: 5px;
   height: 10%;
   width: auto;
-  background-color: rgb(221, 241, 125);
   float: left;
   font-size: 14px;
 }
@@ -132,7 +118,6 @@ body {
   padding: 5px;
   height: 10%;
   width: auto;
-  background-color: rgb(235, 163, 253);
   float: left;
   font-size: 14px;
 }
@@ -142,14 +127,52 @@ body {
   padding: 5px;
   height: 10%;
   width: auto;
-  background-color: rgb(185, 128, 62);
   float: left;
   font-size: 14px;
 }
 
 
 main {
-  height: 100vh;
-  display: flex;
+  height: 90vh;
   justify-content: space-between;
+}
+
+.pagination-controls button.btn {
+  width: auto;
+  background-color: #bfd7ee;
+  border: none;
+  border-radius: 5px;
+  color: rgb(0, 0, 0);
+  padding: 10px 10px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 4px 2px;
+  cursor: pointer;
+  font-family: "Montserrat", sans-serif;
+  font-weight: 300;
+}
+
+.pagination-controls .ellipsis {
+  width: auto;
+  color: rgb(0, 0, 0);
+  padding: 10px 10px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 4px 2px;
+  font-family: "Montserrat", sans-serif;
+  font-weight: 300;
+}
+
+#main-info {
+  display: flex;
+  height: 90vh;
+}
+
+.btn.btn-primary {
+  background-color: #007bff;
+  color: white;
 }
