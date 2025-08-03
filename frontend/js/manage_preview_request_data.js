@@ -31,7 +31,7 @@ function createPreviewContent(housesArray) {
         property.className = "property";
 
         property.addEventListener("click", function () {
-            window.location.href = `pop.html?house=${JSON.stringify(house)}`;
+            window.location.href = `manage_pop.html?house=${JSON.stringify(house)}`;
         });
 
         let picture = document.createElement("div");
@@ -41,23 +41,77 @@ function createPreviewContent(housesArray) {
         picture.style.backgroundImage = `url(${thumbnailPath})`;
         property.appendChild(picture);
 
+        let infoContainer = document.createElement("div");
+        infoContainer.className = "infoContainer";
+        infoContainer.classList.add("row");
+        property.appendChild(infoContainer);
+
         let propertyTextContainer = document.createElement("div");
         propertyTextContainer.className = "propertyTextContainer";
-        property.appendChild(propertyTextContainer);
+        propertyTextContainer.classList.add("col-10");
+        infoContainer.appendChild(propertyTextContainer);
+
+        let buttonsContainer = document.createElement("div");
+        buttonsContainer.className = "buttonsContainer";
+        buttonsContainer.classList.add("col-2", "d-flex", "flex-column", "align-items-center", "gap-1");
+        infoContainer.appendChild(buttonsContainer);
+
+        let editButton = document.createElement("button");
+        editButton.className = "editButton";
+        buttonsContainer.appendChild(editButton);
+
+        let editIcon = document.createElement("img");
+        editIcon.className = "editIcon";
+        editIcon.src = "/RealtorProject/frontend/img/edit.png";
+        editIcon.alt = "edit";
+        editButton.appendChild(editIcon);
+
+        let deleteButton = document.createElement("button");
+        deleteButton.className = "deleteButton";
+        buttonsContainer.appendChild(deleteButton);
+
+        deleteButton.addEventListener("click", e => {
+            e.stopPropagation();    // ← prevent the card’s click from also firing
+            // 1) Ask the user to confirm
+            if (!confirm("Really delete this property?")) return;
+
+            // 2) Send an AJAX POST to your delete endpoint, passing the property’s ID
+            $.post(
+                "http://127.0.0.1/RealtorProject/backend/php/delete_property.php",
+                { id: house.id }
+            )
+                // 3) If the call succeeds (HTTP 200), jQuery runs this callback with `resp` = parsed JSON
+                .done(resp => {
+                    if (resp.success) {
+                        // 4a) On success: remove that property card from the page
+                        property.remove();
+                    } else {
+                        // 4b) On your script returning success=false: show an error
+                        alert("Delete failed: " + resp.error);
+                    }
+                })
+                // 5) If the HTTP request itself fails (network/server error), show a generic error
+                .fail(() => alert("Server error on delete"));
+        });
+
+
+        let deleteIcon = document.createElement("img");
+        deleteIcon.className = "deleteIcon";
+        deleteIcon.src = "/RealtorProject/frontend/img/delete.png";
+        deleteIcon.alt = "delete";
+        deleteButton.appendChild(deleteIcon);
 
         let houseMainInfo = document.createElement("div");
-        houseMainInfo.className = "row";
-        houseMainInfo.classList.add("houseMainInfo");
+        houseMainInfo.className = "houseMainInfo";
+        houseMainInfo.classList.add("gap-4");
         propertyTextContainer.appendChild(houseMainInfo);
 
         let price = document.createElement("div");
-        price.className = "col-5";
         price.classList.add("price");
         price.innerHTML = "$" + house.price;
         houseMainInfo.appendChild(price);
 
         let state = document.createElement("div");
-        state.className = "col-7";
         state.classList.add("state");
         const stateIndex = parseInt(house.property_state);
         const stateText = stateTextArray[stateIndex] ?? "Unknown";
@@ -233,8 +287,27 @@ function renderPaginationControls(totalPages) {
 
 }
 
+function addProperty() {
+    let addProperty = document.getElementById("addProperty");
+
+    let addPropertyButton = document.createElement("button");
+    addPropertyButton.className = "addPropertyButton";
+    addProperty.appendChild(addPropertyButton);
+
+    addPropertyButton.textContent = " ";
+
+    let plusSymbol = document.createElement("span");
+    plusSymbol.textContent = "+";
+
+    let label = document.createElement("p");
+    label.className = "addPropertyLabel";
+    label.textContent = "add property";
+
+    addPropertyButton.append(plusSymbol, label);
+}
 
 $(document).ready(function () {
     getPreviewContent();
     initMap();
+    addProperty();
 });

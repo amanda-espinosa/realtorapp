@@ -17,16 +17,18 @@ body {
 }
 
 .box-left {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  gap: 20px;
+  padding: 20px;
   width: 50%;
   height: 100%;
-  padding: 20px;
+  overflow-y: auto;
   border: 1px solid #ccc;
   border-radius: 3px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  grid-template-columns: repeat(2, 1fr);
-  background-color: #f7f7f7;
+  background-color: #e9e5e5;
   overflow-y: auto;
-  display: grid;
 }
 
 .box-right {
@@ -35,7 +37,7 @@ body {
   flex: 1;
   flex-direction: column;
   padding: 20px;
-  border: 1px solid #ccc;
+  border: 1px solid #ffffff;
   border-radius: 1px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   background-color: #f7f7f7;
@@ -45,24 +47,23 @@ body {
 #map {
   width: 100%;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-  flex: 1; /*esto hace que el mapa ocupe todo el espacio*/
+  flex: 1;
+  /*esto hace que el mapa ocupe todo el espacio*/
 }
 
 .property {
-  height: 370px;
-  padding: 0 24px 20px 24px;
-  gap: 12px;
-  overflow: hidden; /* Evita que el contenido se desborde */
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
-  width: 100%;
+  justify-content: flex-start;
+  padding: 0 10px 10px 10px;
+  height: 370px;
   max-width: 400px;
-  background-color: #fff;
+  overflow: hidden;
   border-radius: 16px;
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
+  background-color: #fff;
   font-family: "Montserrat", sans-serif;
   color: #222;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
   transition: box-shadow 0.2s ease;
 }
 
@@ -75,131 +76,116 @@ body {
 }
 
 .picture {
+  flex: 0 0 80%;
+  position: relative;
   height: 40%;
   width: calc(100% + 48px);
-  margin-left: -24px;       /* lo empuja a la izquierda */
-  margin-right: -24px;      /* lo empuja a la derecha */
-  flex: 0 0 80%;
+  margin-left: -24px;
+  margin-right: -24px;
   background-color: #007bff;
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
-  border-top-left-radius: 16px;   /* redondeo superior opcional */
+  border-top-left-radius: 16px;
   border-top-right-radius: 16px;
-  position: relative;
   transition: transform 0.4s ease-in-out;
 }
 
-.price {
-  font-size: 2rem;
-  font-weight: 600;
-  margin-top: 8px;
+.propertyTextContainer {
+  margin-top: 10px;
+  background-color: white;
 }
 
+.houseMainInfo,
+.houseArea,
+.houseAddress {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0;
+  padding: 0;
+  margin: 0;
+}
+
+.price,
+.state,
 .rooms,
 .bathrooms,
 .area,
-.state {
-  width: auto;
-  height: auto;
-  display: inline-block;
-  font-size: 1.2rem;
-  font-weight: 500;
-  margin-right: 12px;
-}
-
-/*
-.street {
-  margin: 0;
-  padding: 5px;
-  height: 10%;
-  width: auto;
-  float: left;
-  font-size: 14px;
-}
-
-.apartment {
-  margin: 0;
-  padding: 5px;
-  height: 10%;
-  width: auto;
-  float: left;
-  font-size: 14px;
-}
-
-.city {
-  margin: 0;
-  padding: 5px;
-  height: 10%;
-  width: auto;
-  float: left;
-  font-size: 14px;
-}
-
-.addressState {
-  margin: 0;
-  padding: 5px;
-  height: 10%;
-  width: auto;
-  float: left;
-  font-size: 14px;
-}
-
-.zip {
-  margin: 0;
-  padding: 5px;
-  height: 10%;
-  width: auto;
-  float: left;
-  font-size: 14px;
-}
-*/
-
-.apartment,
 .street,
+.apartment,
 .city,
 .addressState,
 .zip {
-  display: inline;
-  font-size: 1.4rem;
-  font-weight: 500;
-  margin-right: 4px;
-  white-space: nowrap;
-  float: none;
+  margin: 0;
   padding: 0;
 }
 
-main {
-  height: 90vh;
-  justify-content: space-between;
+.price,
+.state {
+  display: inline-block;
+  font-size: 2rem;
+  font-weight: 600;
+}
+
+.state {
+  text-align: center;
+}
+
+.houseArea {
+  display: inline-block;
+  width: auto;
+  height: auto;
+  font-size: 1.2rem;
+  font-weight: 500;
+}
+
+.houseAddress {
+  float: none;
+  padding: 0;
+  margin-right: 4px;
+  white-space: nowrap;
+  font-size: 1.3rem;
+  font-weight: 500;
+}
+
+.street,
+.apartment,
+.city,
+.addressState,
+.zip {
+  display: inline-block;
+  margin-right: 4px;
+  white-space: nowrap;
+  font-size: 1.4rem;
+  font-weight: 500;
 }
 
 .pagination-controls button.btn {
+  display: inline-block;
+  padding: 10px 10px;
+  margin: 4px 2px;
   width: auto;
-  background-color: #bfd7ee;
   border: none;
   border-radius: 5px;
+  background-color: #bfd7ee;
   color: rgb(0, 0, 0);
-  padding: 10px 10px;
+  font-family: "Montserrat", sans-serif;
+  font-size: 16px;
+  font-weight: 300;
   text-align: center;
   text-decoration: none;
-  display: inline-block;
-  font-size: 16px;
-  margin: 4px 2px;
   cursor: pointer;
-  font-family: "Montserrat", sans-serif;
-  font-weight: 300;
 }
 
 .pagination-controls .ellipsis {
+  display: inline-block;
   width: auto;
-  color: rgb(0, 0, 0);
   padding: 10px 10px;
+  margin: 4px 2px;
+  color: rgb(0, 0, 0);
+  font-size: 16px;
   text-align: center;
   text-decoration: none;
-  display: inline-block;
-  font-size: 16px;
-  margin: 4px 2px;
   font-family: "Montserrat", sans-serif;
   font-weight: 300;
 }

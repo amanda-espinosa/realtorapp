@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Preview</title>
+  <link rel="stylesheet" href="../css/manage_preview.css">
+  <link rel="stylesheet" href="../css/bootstrap.min.css">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet"> 
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+    crossorigin=""/>
+  <script src="../js/jquery-3.7.1.js"></script>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+     integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+     crossorigin=""></script>
+  <script src="../js/manage_preview_request_data.js"></script>
+</head>
+<body>
+  <main>
+    <div id="main-info">
+      <div class="box-left" id="houseListContainer">
+      </div>
+      <div class="box-right">
+        <div id="map"></div>
+      </div>
+    </div>
+    <div id="paginationAndAddProperty" class="row">
+        <div id="paginationControls" class="pagination-controls d-flex col-9"></div>
+        <div id="addProperty" class="d-flex col-3"></div>
+    </div>   
+  </main>
+</body>
+</html>

@@ -11,7 +11,6 @@
 html,
 body {
   height: 100%;
-  margin: 0;
   scroll-behavior: smooth;
 }
 
@@ -26,10 +25,10 @@ main {
   align-self: center;
   position: relative;
   display: flex;
-  /* This pushes footer down */
+  flex-direction: column;
 }
 
-/*nav*/
+/*menu*/
 nav {
   display: flex;
   justify-content: space-between;
@@ -45,7 +44,6 @@ nav {
   box-shadow: 3px 3px 3px rgba(121, 121, 255, 0.225);
 }
 
-/* Logo centrado */
 #nav-logo {
   position: absolute;
   left: 50%;
@@ -60,7 +58,6 @@ nav {
   height: 60px;
 }
 
-/* Lado izquierdo y derecho */
 #nav-left,
 #nav-right {
   display: flex;
@@ -73,10 +70,7 @@ nav {
   padding: 6px 12px;
   margin: 0 5px;
   border: none;
-  font-family: "Montserrat", sans-serif;
-  font-optical-sizing: auto;
   font-weight: 600;
-  font-style: normal;
   cursor: pointer;
   font-size: 16px;
   text-decoration: none;
@@ -85,7 +79,6 @@ nav {
 
 #back-button:hover {
   color: #005ef6;
-  transition: 0.9s, color 0.9s;
 }
 
 #share-icons a {
@@ -100,7 +93,6 @@ nav {
 }
 
 /*gallery*/
-
 #gallery {
   display: flex;
   position: relative;
@@ -125,6 +117,9 @@ nav {
   padding: 5px;
   margin: 5px;
   width: 100%;
+  position: relative;
+  overflow: hidden;
+  border-radius: 5px;
 }
 
 #galleryRight {
@@ -140,13 +135,6 @@ nav {
   #galleryRight {
     grid-template-columns: 1fr;
   }
-}
-
-.homePics,
-.homePicsMore {
-  position: relative;
-  overflow: hidden;
-  border-radius: 5px;
 }
 
 .homePics img,
@@ -176,98 +164,75 @@ nav {
   border-radius: 5px;
 }
 
-#property {
-  display: flex;
-  gap: 20px;
-  align-items: flex-start;
-  height: auto;
-}
 
-#info {
-  padding: 50px;
-  height: auto;
+#property {
+  margin: 30px 100px;
   background: rgb(255, 255, 255);
 }
 
-#info,
-#description {
-  width: 100%;
-  max-width: 900px;
-}
-
-
-#price,
-#number_of_rooms,
-#number_of_bathrooms,
-#area_sqft,
-#property_state,
-#address {
-  padding: 10px;
-  margin: 0 10px;
-  width: auto;
-  height: auto;
-}
-
-#rooms {
-  display: flex;
+#houseMainInfo {
   align-items: baseline;
 }
 
-#number_of_rooms {
-  margin-left: auto;
-}
-
-#price,
-#number_of_rooms,
-#number_of_bathrooms,
-#area_sqft {
-  color: #131d26;
-  font-weight: 300;
-  font-size: 20px;
+#property h1 {
+  margin: 0;
+  padding: 0;
+  width: fit-content;
+  height: fit-content;
 }
 
 #price {
-  font-weight: 400;
-  font-size: 30px;
-}
-
-#address {
-  display: flex;
-  align-items: center;
-}
-
-#address_street {
-  margin-left: auto;
-}
-
-#address_street,
-#address_apartment,
-#address_city,
-#address_state,
-#address_zip {
-  padding: 0 20px;
-  font-size: 20px;
+  font-size: 2.5em;
 }
 
 #property_state {
-  font-size: 30px;
-  margin-left: 20px;
-  color: #2f404f;
+  width: fit-content;
+  font-size: 2em;
+}
+
+#houseArea {
+  display: flex;
+  margin-top: 20px;
+}
+
+#number_of_rooms,
+#number_of_bathrooms {
+  margin-left: 5px;
+}
+
+#houseAddress {
+  margin: 10px 0 0 0;
+}
+
+#mapAndForm {
+  padding: 0 100px;
+  height: auto;
+  width: 100%;
+}
+
+#mapContainer {
+  height: 560px;
+  width: 60%;
+  margin: 0;
+  padding: 0;
+}
+
+#map {
+  height: 100%;
+  width: 100%;
+  border: none;
+  border-radius: 16px;
 }
 
 #formContainer {
-  flex: 0 0 300px;
-  display: block;
-  background-color: #ffffff;
-  align-items: center;
-  position: absolute;
-  top: 50%;
-  left: 25%;
-  right: 0;
-  width: 28%;
-  padding: 80px 0;
-  transform: translateY(0);
-  transition: top 0.10s ease;
+  width: fit-content;
+  margin: 0;
+}
+
+.image-text {
+  font-size: 2.5em;
+  font-weight: 400;
+  color: #2f404f;
 }
 
 #formSubmitButton {
@@ -293,63 +258,38 @@ nav {
   transition: 0.9s, color 0.9s;
 }
 
-#description {
-  padding: 60px;
-  font-size: 18px;
-  color: #1a252f;
-  height: 250px;
-  width: 75%;
-  background-color: rgb(255, 255, 255);
-  float: left;
-}
-
-#webData {
-  display: flex;
-  flex-direction: row-reverse;
-  align-items: center;
-}
-
-.daysOnWebSite,
-.views {
-  padding: 10px;
-  color: #2f404f;
-  font-weight: 300;
-  font-size: 20px;
-}
-
-#map {
-  height: 500px;
-  width: 60%;
-  margin: 0 150px;
-  border-radius: 5px;
-}
-
 #features {
+  width: 100%;
+  padding: 100px 200px 50px 200px;
+}
+
+.two-column-container {
   display: flex;
-  flex-direction: row;
-  align-items: flex-start;
-  width: 75%;
-  margin: 50px;
+  gap: 3rem;
+  margin-bottom: 2rem;
 }
 
-#section1 {
-  margin-left: 50px;
+.column {
+  flex: 1 1 50%;
+  min-width: 300px;
 }
 
-#section2 {
-  margin-left: 20rem;
+.field-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 1rem;
 }
 
-#interior,
-#propertyFacts,
-#construction,
-#utilities,
-#communityHoa,
-#nearbySchools {
-  width: auto;
-  padding: 20px;
-  font-size: 20px;
+.field-row label {
+  font-weight: 600;
+  min-width: fit-content;
 }
+
+.field-row div {
+  flex: 1;
+  padding-left: 5px;
+}
+
 
 #similarHomes {
   height: 300px;

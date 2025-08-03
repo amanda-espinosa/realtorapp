@@ -2,13 +2,12 @@
     $host = 'localhost';
     $user = 'amanda';
     $password = 'mariadbaer';
-    $mysqli = new mysqli($host, $user, $password);
+    $database = 'realtor_project';
+
+    $connection = new mysqli($host, $user, $password, $database);
     
-    if($mysqli→connect_errno ) {
-    printf("Connect failed: %s",
-    $mysqli→connect_error);
-    exit();
+    if ($connection->connect_errno) {
+        printf("Connect failed: %s", $connection->connect_error);
+        exit();
     }
-    printf('Connected successfully');
-    $mysqli→close();
 ?>
