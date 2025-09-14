@@ -1,7 +1,7 @@
 <?php
 $propertyId = $_GET['id'];
 $directoryPath = __DIR__ . "/../img/$propertyId"; 
-$baseUrl = "http://127.0.0.1/RealtorProject/backend/img/$propertyId"; 
+$baseUrl = "../../backend/img/$propertyId"; 
 $images = [];
 
 if (is_dir($directoryPath)) {

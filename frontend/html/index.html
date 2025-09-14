@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div id="realtor-app-container"></div>
+    <script>
+        // Create a new <script> element
+        let script = document.createElement("script");
+
+        // Set the src attribute
+        script.src = "/realtorapp/frontend/js/app-injector.js";
+
+        // Optional: set type if needed
+        script.type = "text/javascript";
+
+        // Append it to the head
+        document.head.appendChild(script);
+    </script>
+</body>
+</html>

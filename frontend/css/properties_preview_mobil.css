@@ -1,0 +1,94 @@
+@media only screen and (max-width: 768px) {
+
+    #main-info {
+        flex-direction: column;
+        height: auto;
+    }
+
+    .box-left,
+    .box-right {
+        width: 100% !important;
+        height: auto !important;
+        padding: 10px;
+    }
+
+    .box-left {
+        display: flex;
+        flex-direction: column;
+        flex-wrap: nowrap;
+    }
+
+    .box-left::-webkit-scrollbar {
+        display: none;
+    }
+
+    .box-left {
+        scrollbar-width: none;
+    }
+
+    .box-left {
+        -ms-overflow-style: none;
+    }
+
+    .property {
+        flex-direction: column;
+        height: auto;
+        margin-bottom: 1.5rem;
+    }
+
+    .picture {
+        flex: none;
+        width: 100% !important;
+        height: 180px !important;
+        margin: 0 !important;
+    }
+
+    .propertyTextContainer {
+        margin: 0.5rem 0;
+        padding: 0 0.5rem;
+    }
+
+    /* 5. Stack the “price | state” row */
+    .houseMainInfo {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.25rem;
+    }
+
+    .price,
+    .state {
+        font-size: 1.8rem;
+    }
+
+    .state {
+        width: auto;
+        text-align: left;
+    }
+
+    .houseArea,
+    .houseAddress {
+        flex-direction: column;
+        gap: 0.25rem;
+        font-size: 1.2rem;
+    }
+
+    .street,
+    .apartment,
+    .city,
+    .addressState,
+    .zip {
+        display: inline;
+    }
+
+    .pagination-controls button.btn {
+        padding: 8px 6px;
+        font-size: 1.4rem;
+        margin: 3px 1px;
+    }
+
+    .pagination-controls .ellipsis {
+        padding: 8px 6px;
+        font-size: 1.4rem;
+        margin: 3px 1px;
+    }
+}

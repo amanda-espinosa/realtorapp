@@ -1,0 +1,86 @@
+@media only screen and (min-width: 768px) and (max-width: 991.98px) {
+
+    #main-info {
+        flex-direction: column;
+        height: auto;
+    }
+
+    .box-left,
+    .box-right {
+        width: 100%;
+        height: auto;
+        padding: 15px;
+        justify-items: center;
+    }
+
+    .box-left {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1rem;
+        justify-items: center;
+    }
+
+    .box-left::-webkit-scrollbar {
+        display: none;
+    }
+
+    .box-left {
+        scrollbar-width: none;
+    }
+
+    .box-left {
+        -ms-overflow-style: none;
+    }
+
+    .property {
+        flex-direction: column;
+        width: 100%;
+        height: auto;
+        margin: 0;
+    }
+
+    .picture {
+        flex: none;
+        width: 100% !important;
+        height: 200px !important;
+        margin: 0 !important;
+    }
+
+    .propertyTextContainer {
+        padding: 1rem;
+    }
+
+    .houseMainInfo {
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    .price,
+    .state {
+        font-size: 2.2rem;
+    }
+
+    .houseArea,
+    .houseAddress {
+        flex-wrap: nowrap;
+        gap: 1rem;
+        font-size: 1.3rem;
+    }
+
+    .pagination-controls {
+        justify-content: center;
+        margin: 1rem 0;
+    }
+
+    .pagination-controls button.btn {
+        padding: 12px 8px;
+        font-size: 1.5rem;
+    }
+
+    .pagination-controls .ellipsis {
+        padding: 12px 8px;
+        font-size: 1.5rem;
+    }
+}

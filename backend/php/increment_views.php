@@ -10,8 +10,6 @@ if (!isset($_POST['id'])) {
 
 $propertyId = intval($_POST['id']);
 
-$connection = new mysqli($host, $user, $password, $database);
-
 if ($connection->connect_error) {
     http_response_code(500);
     echo json_encode(["error" => "Database connection failed"]);

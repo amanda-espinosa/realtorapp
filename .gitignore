@@ -1,2 +1,4 @@
 # VSCode
 .vscode
+backend/img/*
+backend/houseThumbnail/*

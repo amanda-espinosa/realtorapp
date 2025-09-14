@@ -1,0 +1,109 @@
+.box-left {
+    height: 100%;
+    width: 50%;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
+    gap: 10px;
+    padding: 30px;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    place-items: center;
+}
+
+.box-right {
+    width: 50%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+}
+
+#map {
+    width: 100%;
+    flex: 1;
+}
+
+.property {
+    display: flex;
+    flex-direction: column;
+    height: 320px;
+    width: 380px;
+    overflow: hidden;
+    align-self: center;
+    justify-items: center;
+}
+
+.property:hover {
+    box-shadow: 0 16px 32px rgba(0, 0, 0, 0.12);
+}
+
+.property:hover .picture {
+    transform: scale(1.03);
+}
+
+.picture {
+    flex: 0 0 60%;
+    width: 100%;
+    aspect-ratio: 16/9;
+    margin: 0;
+    padding: 0;
+}
+
+.propertyTextContainer {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    gap: 6px;
+    padding: 10px 12px;
+}
+
+.houseMainInfo,
+.houseArea {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 0;
+    padding: 0;
+}
+
+.houseArea,
+.houseAddress {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.houseAddress {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    margin-top: auto;
+    padding: 0;
+}
+
+.pagination-controls button.btn {
+    display: inline-block;
+    padding: 10px 10px;
+    margin: 4px 2px;
+    width: auto;
+}
+
+.pagination-controls .ellipsis {
+    display: inline-block;
+    padding: 10px 10px;
+    margin: 4px 2px;
+}
+
+#main-info {
+    display: flex;
+    height: 90vh;
+    align-items: stretch;
+}
+
+.buttonsContainer button {
+    width: 36px;
+    height: 36px;
+    padding: 0;
+    display: grid;
+    place-items: center;
+}

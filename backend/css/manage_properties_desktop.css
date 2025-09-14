@@ -1,0 +1,148 @@
+.box-left {
+    height: 100%;
+    width: 50%;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
+    gap: 10px;
+    padding: 30px;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    place-items: center;
+}
+
+.box-right {
+    width: 50%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+}
+
+#map {
+    width: 100%;
+    flex: 1;
+}
+
+.property {
+    display: flex;
+    flex-direction: column;
+    height: 320px;
+    width: 380px;
+    overflow: hidden;
+    align-self: center;
+    justify-items: center;
+}
+
+.picture {
+    flex: 0 0 60%;
+    width: 100%;
+    aspect-ratio: 16/9;
+    margin: 0;
+    padding: 0;
+}
+
+.mainInfoContainer {
+    display: flex;
+    flex-direction: row;
+}
+
+.propertyTextContainer {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    width: 85%;
+    gap: 6px;
+    padding: 10px 12px;
+}
+
+.buttonsContainer {
+    display: flex;
+    flex-direction: column;
+    width: 15%;
+    height: 100%;
+    justify-content: center;
+    align-items: center;
+    padding: 5px;
+    gap: 5px;
+}
+
+.buttonsContainer button {
+    width: 95%;
+    height: 95%;
+    place-items: center;
+}
+
+.editIcon,
+.deleteIcon {
+    width: 80%;
+    height: 80%;
+}
+
+.houseMainInfo,
+.houseArea {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 0;
+    padding: 0;
+}
+
+.houseArea,
+.houseAddress {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.houseAddress {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    margin-top: auto;
+    padding: 0;
+}
+
+#paginationAndAddProperty {
+    display: flex;
+    flex-direction: row;
+    height: 50px;
+}
+
+#paginationControls {
+    width: 70%;
+    height: 100%;
+    display: flex;
+    flex-direction: row;
+    gap: 5px;
+}
+
+#addProperty {
+    width: 30%;
+    height: 100%;
+}
+
+.addPropertyButton {
+    height: 100%;
+    padding: 10px 10px;
+    margin: 4px 2px;
+
+}
+
+#paginationControls button .btn {
+    display: inline-block;
+    padding: 10px 10px;
+    margin: 4px 2px;
+    width: auto;
+}
+
+#paginationControls button .ellipsis {
+    display: inline-block;
+    padding: 10px 10px;
+    margin: 4px 2px;
+}
+
+#main-info {
+    display: flex;
+    height: 90vh;
+    align-items: stretch;
+}

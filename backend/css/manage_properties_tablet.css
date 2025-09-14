@@ -1,0 +1,150 @@
+@media only screen and (min-width: 768px) and (max-width: 991.98px) {
+
+    #main-info {
+        flex-direction: column;
+        height: auto;
+    }
+
+    .box-left,
+    .box-right {
+        width: 100%;
+        height: auto;
+        padding: 15px;
+        justify-items: center;
+    }
+
+    .box-left {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1rem;
+        justify-items: center;
+        overflow-y: scroll;
+        overflow-x: hidden;
+    }
+
+    .box-left::-webkit-scrollbar {
+        display: none;
+    }
+
+    .box-left {
+        scrollbar-width: none;
+    }
+
+    .box-left {
+        -ms-overflow-style: none;
+    }
+
+    .property {
+        flex-direction: column;
+        width: 100%;
+        height: auto;
+        margin: 0;
+    }
+
+    .picture {
+        flex: none;
+        width: 100% !important;
+        height: 200px !important;
+        margin: 0 !important;
+    }
+
+    .mainInfoContainer {
+        display: flex;
+        flex-direction: row;
+    }
+
+    .propertyTextContainer {
+        display: flex;
+        flex-direction: column;
+        flex: 1;
+        width: 85%;
+        gap: 6px;
+        padding: 10px 12px;
+    }
+
+    .buttonsContainer {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        padding: 21px 0;
+        gap: 5px;
+        width: 15%;
+    }
+
+    .buttonsContainer button {
+        width: 95%;
+        height: 95%;
+        place-items: center;
+    }
+
+    .editIcon,
+    .deleteIcon {
+        width: 80%;
+        height: 80%;
+    }
+
+    .houseMainInfo {
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    .price,
+    .state {
+        font-size: 2.2rem;
+    }
+
+    .houseArea,
+    .houseAddress {
+        flex-wrap: nowrap;
+        gap: 1rem;
+        font-size: 1.3rem;
+    }
+
+    #paginationAndAddProperty {
+        display: flex;
+        flex-direction: row;
+        height: 50px;
+    }
+
+    #paginationControls {
+        width: 70%;
+        height: 100%;
+        display: flex;
+        flex-direction: row;
+        gap: 5px;
+    }
+
+    #addProperty {
+        width: 30%;
+        height: 100%;
+    }
+
+    .addPropertyButton {
+        height: 100%;
+        padding: 10px 10px;
+        margin: 4px 2px;
+    }
+
+    #paginationControls button .btn {
+        display: inline-block;
+        padding: 10px 10px;
+        margin: 4px 2px;
+        width: auto;
+    }
+
+    .pagination-controls .ellipsis {
+        padding: 10px 10px;
+        margin: 4px 2px;
+        font-size: 1.5rem;
+    }
+
+    #main-info {
+        display: flex;
+        height: 90vh;
+        align-items: stretch;
+    }
+
+}

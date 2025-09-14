@@ -19,7 +19,7 @@ function init() {
     let houseString = getQueryParam("house");
     let house = JSON.parse(houseString);
 
-    fetch(`http://127.0.0.1/RealtorProject/backend/php/get_property_pictures.php?id=${house.id}`)
+    fetch(`../../backend/php/get_property_pictures.php?id=${house.id}`)
         .then(response => response.json())
         .then(images => {
 
@@ -74,8 +74,6 @@ function init() {
         });
 
     if (house) {
-        //updateShareLinks(house.id);
-
         let propertiesHouseObject = Object.getOwnPropertyNames(house);
 
         for (let i = 0; i < propertiesHouseObject.length; i++) {
@@ -87,7 +85,7 @@ function init() {
             }
         }
 
-        $.post("http://127.0.0.1/RealtorProject/backend/php/increment_views.php", {
+        $.post("../../backend/php/increment_views.php", {
             id: house.id
         }).then(response => {
             console.log("View count incremented:", response);
@@ -133,7 +131,7 @@ function init() {
                         .addTo(map)
                         .bindPopup(`<b>${house.address_street}</b><br>${house.address_city}`);
 
-                    $.post("http://127.0.0.1/RealtorProject/backend/php/update_coordinates.php", {
+                    $.post("../../backend/php/update_coordinates.php", {
                         id: house.id,
                         latitude: coords.lat,
                         longitude: coords.lng
@@ -150,17 +148,3 @@ function init() {
     }, 200);
 
 }
-/*
-function updateShareLinks(houseId) {
-    const url = `http://127.0.0.1:5501/RealtorProject/frontend/html/pop.html?id=${houseId}`; // Adjust if deployed
-
-    document.getElementById("facebook-share").href =
-        `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`;
-
-    document.getElementById("whatsapp-share").href =
-        `https://api.whatsapp.com/send?text=${encodeURIComponent("Check out this property: " + url)}`;
-
-    document.getElementById("email-share").href =
-        `mailto:?subject=Awesome Property&body=Look at this property I found: ${encodeURIComponent(url)}`;
-}
-*/

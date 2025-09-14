@@ -1,4 +1,4 @@
-const previewContentUrl = "http://127.0.0.1/RealtorProject/backend/php/preview_get_data.php";
+const previewContentUrl = "../php/list_properties.php";
 const numberOfHouses = 8;
 let currentPage = 1;
 
@@ -10,11 +10,90 @@ let stateTextArray = [
     "Out of market"
 ];
 
-let map;
+const FL_BOUNDS = { minLat: 24.3, maxLat: 31.1, minLng: -87.7, maxLng: -79.8 };
+const OPEN_CAGE_KEY = '7df2980db5ee44cb86683f9b54a13371';
 
+function formatAddress(house) {
+    const parts = [
+        house.address_street,
+        house.address_apartment,
+        house.address_city,
+        house.address_state,
+        house.address_zip
+    ].map(v => (v == null ? "" : v.trim()))
+        .filter(Boolean);
+
+    return parts.join(", ");
+}
+
+function isValidCoords(lat, lng) {
+    const la = Number(lat), ln = Number(lng);
+    if (!Number.isFinite(la) || !Number.isFinite(ln)) return false;
+    return la >= FL_BOUNDS.minLat && la <= FL_BOUNDS.maxLat &&
+        ln >= FL_BOUNDS.minLng && ln <= FL_BOUNDS.maxLng;
+}
+
+async function geocodeAddress(address) {
+    const url = 'https://api.opencagedata.com/geocode/v1/json'
+        + '?q=' + encodeURIComponent(address)
+        + '&key=' + OPEN_CAGE_KEY
+        + '&no_annotations=1';
+
+    const res = await fetch(url);
+    const data = await res.json();
+
+    if (!data.results || !data.results[0]) {
+        throw new Error('No geocode results');
+    }
+    const g = data.results[0].geometry;
+    return { lat: g.lat, lng: g.lng };
+}
+
+async function putMarkerOrGeocode(house) {
+    let lat = house.latitude, lng = house.longitude;
+
+    if (isValidCoords(lat, lng)) {
+        L.marker([Number(lat), Number(lng)])
+            .addTo(map)
+            .bindPopup(`<b>${house.address_street}</b><br>${house.address_city}`);
+        return;
+    }
+
+    const fullAddress = formatAddress(house);
+    if (!fullAddress) {
+        console.warn('Missing address parts; cannot geocode for id:', house.id);
+        return;
+    }
+
+    try {
+        const { lat: gLat, lng: gLng } = await geocodeAddress(fullAddress);
+
+        if (isValidCoords(gLat, gLng)) {
+            L.marker([gLat, gLng])
+                .addTo(map)
+                .bindPopup(`<b>${house.address_street}</b><br>${house.address_city}`);
+
+            $.post("http://127.0.0.1/wordpress/realtorapp/backend/php/update_coordinates.php", {
+                id: house.id,
+                latitude: gLat,
+                longitude: gLng
+            }).then(() => {
+                console.log("Coordinates saved for house ID:", house.id);
+            }).catch(() => {
+                console.warn("Could not save coords for house ID:", house.id);
+            });
+        } else {
+            console.warn('Geocoded coords out of FL bounds for id:', house.id, gLat, gLng);
+        }
+    } catch (err) {
+        console.error('Geocoding error for id:', house.id, err);
+    }
+}
+
+
+let map;
 function initMap() {
     map = L.map('map').setView([26.7153, -80.0534], 8);
-
     L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
         maxZoom: 19,
         attribution: '&copy; OpenStreetMap'
@@ -27,34 +106,30 @@ function createPreviewContent(housesArray) {
     container.innerHTML = "";
 
     housesArray.forEach(function (house) {
-        let property = document.createElement("div");
-        property.className = "property";
-
-        property.addEventListener("click", function () {
-            window.location.href = `manage_pop.html?house=${JSON.stringify(house)}`;
+        let propertyContainer = document.createElement("div");
+        propertyContainer.className = "property";
+        propertyContainer.addEventListener("click", function () {
+            window.location.href = `property_manager.html?house=${JSON.stringify(house)}`;
         });
 
         let picture = document.createElement("div");
         picture.className = "picture";
 
-        let thumbnailPath = `http://127.0.0.1/RealtorProject/backend/houseThumbnail/${house.id}/thumbnail.jpg`;
+        let thumbnailPath = `http://127.0.0.1/wordpress/realtorapp/backend/houseThumbnail/${house.id}/thumbnail.jpg`;
         picture.style.backgroundImage = `url(${thumbnailPath})`;
-        property.appendChild(picture);
+        propertyContainer.appendChild(picture);
 
-        let infoContainer = document.createElement("div");
-        infoContainer.className = "infoContainer";
-        infoContainer.classList.add("row");
-        property.appendChild(infoContainer);
+        let mainInfoContainer = document.createElement("div");
+        mainInfoContainer.className = "mainInfoContainer";
+        propertyContainer.appendChild(mainInfoContainer);
 
         let propertyTextContainer = document.createElement("div");
         propertyTextContainer.className = "propertyTextContainer";
-        propertyTextContainer.classList.add("col-10");
-        infoContainer.appendChild(propertyTextContainer);
+        mainInfoContainer.appendChild(propertyTextContainer);
 
         let buttonsContainer = document.createElement("div");
         buttonsContainer.className = "buttonsContainer";
-        buttonsContainer.classList.add("col-2", "d-flex", "flex-column", "align-items-center", "gap-1");
-        infoContainer.appendChild(buttonsContainer);
+        mainInfoContainer.appendChild(buttonsContainer);
 
         let editButton = document.createElement("button");
         editButton.className = "editButton";
@@ -62,7 +137,7 @@ function createPreviewContent(housesArray) {
 
         let editIcon = document.createElement("img");
         editIcon.className = "editIcon";
-        editIcon.src = "/RealtorProject/frontend/img/edit.png";
+        editIcon.src = "../img/edit.png";
         editIcon.alt = "edit";
         editButton.appendChild(editIcon);
 
@@ -71,48 +146,39 @@ function createPreviewContent(housesArray) {
         buttonsContainer.appendChild(deleteButton);
 
         deleteButton.addEventListener("click", e => {
-            e.stopPropagation();    // ← prevent the card’s click from also firing
-            // 1) Ask the user to confirm
+            e.stopPropagation();
             if (!confirm("Really delete this property?")) return;
-
-            // 2) Send an AJAX POST to your delete endpoint, passing the property’s ID
             $.post(
-                "http://127.0.0.1/RealtorProject/backend/php/delete_property.php",
+                "http://127.0.0.1/wordpress/realtorapp/backend/php/delete_property.php",
                 { id: house.id }
             )
-                // 3) If the call succeeds (HTTP 200), jQuery runs this callback with `resp` = parsed JSON
                 .done(resp => {
                     if (resp.success) {
-                        // 4a) On success: remove that property card from the page
                         property.remove();
                     } else {
-                        // 4b) On your script returning success=false: show an error
                         alert("Delete failed: " + resp.error);
                     }
                 })
-                // 5) If the HTTP request itself fails (network/server error), show a generic error
                 .fail(() => alert("Server error on delete"));
         });
 
-
         let deleteIcon = document.createElement("img");
         deleteIcon.className = "deleteIcon";
-        deleteIcon.src = "/RealtorProject/frontend/img/delete.png";
+        deleteIcon.src = "../img/delete.png";
         deleteIcon.alt = "delete";
         deleteButton.appendChild(deleteIcon);
 
         let houseMainInfo = document.createElement("div");
         houseMainInfo.className = "houseMainInfo";
-        houseMainInfo.classList.add("gap-4");
         propertyTextContainer.appendChild(houseMainInfo);
 
         let price = document.createElement("div");
-        price.classList.add("price");
+        price.className = "price";
         price.innerHTML = "$" + house.price;
         houseMainInfo.appendChild(price);
 
         let state = document.createElement("div");
-        state.classList.add("state");
+        state.className = "state";
         const stateIndex = parseInt(house.property_state);
         const stateText = stateTextArray[stateIndex] ?? "Unknown";
         state.innerText = stateText;
@@ -160,44 +226,10 @@ function createPreviewContent(housesArray) {
         zip.className = "zip";
         houseAddress.appendChild(zip);
 
-        houseAddress.innerHTML = house.address_street + ", " + house.address_apartment + "  " + house.address_city + ", " + house.address_state + ", " + house.address_zip;
+        houseAddress.textContent = formatAddress(house);
 
-        //geocoding
-        if (house.latitude && house.longitude) {
-            L.marker([house.latitude, house.longitude])
-                .addTo(map)
-                .bindPopup(`<b>${house.address_street}</b><br>${house.address_city}`);
-        } else {
-            let fullAddress = `${house.address_street} ${house.address_apartment}, ${house.address_city}, ${house.address_state}, ${house.address_zip}`;
-
-            let api_key = '7df2980db5ee44cb86683f9b54a13371';
-
-            let request_url = 'https://api.opencagedata.com/geocode/v1/json'
-                + '?q=' + encodeURIComponent(fullAddress)
-                + '&key=' + api_key
-                + '&no_annotations=1';
-
-            fetch(request_url)
-                .then(response => response.json())
-                .then(data => {
-                    const coords = data.results[0].geometry;
-
-                    L.marker([coords.lat, coords.lng])
-                        .addTo(map)
-                        .bindPopup(`<b>${house.address_street}</b><br>${house.address_city}`);
-
-                    $.post("http://127.0.0.1/RealtorProject/backend/php/update_coordinates.php", {
-                        id: house.id,
-                        latitude: coords.lat,
-                        longitude: coords.lng
-                    }).then(() => {
-                        console.log("coordinates saved for house ID: ", house.id);
-                    });
-                })
-                .catch(err => console.error('Geocoding error:', err));
-        }
-
-        container.appendChild(property);
+        putMarkerOrGeocode(house);
+        container.appendChild(propertyContainer);
     });
 }
 
@@ -212,9 +244,8 @@ function getPreviewContent() {
         success: function (data) {
             const totalRows = data.totalRows;
             const totalPages = Math.ceil(totalRows / numberOfHouses);
-
             console.log('Total rows in DB:', data.totalRows);
-
+            propertyCollection = data.houses;
             createPreviewContent(data.houses);
             renderPaginationControls(totalPages);
         },
@@ -287,27 +318,17 @@ function renderPaginationControls(totalPages) {
 
 }
 
-function addProperty() {
+function displayAddPropertyContainer() {
     let addProperty = document.getElementById("addProperty");
 
     let addPropertyButton = document.createElement("button");
     addPropertyButton.className = "addPropertyButton";
+    addPropertyButton.innerHTML = "+ add Property";
     addProperty.appendChild(addPropertyButton);
-
-    addPropertyButton.textContent = " ";
-
-    let plusSymbol = document.createElement("span");
-    plusSymbol.textContent = "+";
-
-    let label = document.createElement("p");
-    label.className = "addPropertyLabel";
-    label.textContent = "add property";
-
-    addPropertyButton.append(plusSymbol, label);
 }
 
 $(document).ready(function () {
     getPreviewContent();
     initMap();
-    addProperty();
+    displayAddPropertyContainer();
 });

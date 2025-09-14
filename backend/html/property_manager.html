@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" href="../../css/jquery.fancybox.min.css">
+    <link rel="stylesheet" href="../../css/bootstrap.min.css">
+
+    <link rel="stylesheet" href="../css/property_manager.css">
+    <!-- Phones: up to 768px -->
+    <link rel="stylesheet" href="../css/property_manager_mobil.css" media="only screen and (max-width: 768px)">
+    <!-- Tablets: 768px–991.98px -->
+    <link rel="stylesheet" href="../css/property_manager_tablet.css" media="only screen and (min-width: 768px) and (max-width: 991.98px)">
+    <!-- Desktops: 992px and up -->
+    <link rel="stylesheet" href="../css/property_manager_desktop.css" media="only screen and (min-width: 992px)">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@100..900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="crossorigin=""/> 
+    <script src="../../js/jquery-3.7.1.js"></script>
+    <script src="../../js/jquery.fancybox.min.js"></script>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+     integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+     crossorigin=""></script>
+    <script src="../js/property_manager.js"></script>
+    <title>Property view</title>
+</head>
+<body>
+  <nav>
+      <div id="nav-left">
+      <a href="manage_properties.html" class="btn btn-secondary" id="back-button"> back to preview</a>
+      </div>
+  </nav>
+  <div class="page-container">
+    <main id="mainSection">
+      <div id="popUpContainer">
+        <div id="gallery">
+            <div id="mainPhotoContainer"></div>    
+            <div id="galleryRight"></div>
+        </div>
+
+        <div id="property">
+          <div id="info">
+            <div id="houseMainInfo">
+              <h1>$</h1>
+              <div id="price"></div>
+              <div id="property_state"></div>
+            </div>
+
+            <div id="houseArea">
+              <div id="number-of-rooms-section" class="houseAreaSections">
+                <label for="number_of_rooms">Number of rooms: </label>
+                <div id="number_of_rooms"></div>
+              </div>
+              <div id="number-of-bathrooms-section" class="houseAreaSections">
+                <label for="number_of_bathrooms">Number of bathrooms: </label>
+                <div id="number_of_bathrooms"></div>
+              </div>
+              <div id="area-sqft-section" class="houseAreaSections">
+                <div id="area_sqft"></div>
+                <div>sqft</div>
+              </div>
+            </div>
+            <div id="houseAddress">
+              <div id="address_street" class="address-item"></div>
+              <div id="address_apartment" class="address-item"></div>
+              <div id="address_city" class="address-item"></div>
+              <div id="address_state" class="address-item"></div>
+              <div id="address_zip" class="address-item"></div>
+            </div>
+            <div id="webData">
+            <div id="enrollment_dateContent">
+              <label for="enrollment_date">Listed since: </label>
+              <div id="enrollment_date"></div>
+            </div>
+            <div id="viewsContent">
+                <label for="views_count">Views: </label>
+                <div id="views_count"></div>
+            </div>
+            <div id="description">
+            </div>
+          </div>
+
+        <div id="mapAndForm">
+          <div id="mapContainer">
+            <div id="map"></div>
+          </div>
+          <div id="formContainer">
+            <form action="../../backend/php/sendform.php" method="post">
+                <p class="image-text">Contact Agent</p>
+                <label for="name">Name:</label><br>
+                <input type="text" name="name" id="name"><br><br>
+                <label for="email">Email:</label><br>
+                <input type="text" name="email" id="email"><br><br>
+                <label for="phone">Phone:</label><br>
+                <input type="text" name="phone" id="phone"><br><br>
+                <label for="comments">Comments:</label><br>
+                <textarea name="comments" id="comments" rows="5" cols="35"></textarea><br><br>
+                <label for="appointment">Schedule your tour:</label> <br>
+                <input type="datetime-local" id="appointment" name="appointment"><br><br>
+                <input type="submit" id="formSubmitButton" value="submit">
+            </form>
+          </div>
+        </div>
+
+        <div id="features">
+            <div class="two-column-container">
+              <div class="column" id="interior">
+                <div class="field-row">
+                  <label for="heating_type">Heating type:</label>
+                  <div id="heating_type"></div>
+                </div>
+                <div class="field-row">
+                  <label for="cooling_type">Cooling type:</label>
+                  <div id="cooling_type"></div>
+                </div>
+                <div class="field-row">
+                  <label for="appliances">Appliances:</label>
+                  <div id="appliances"></div>
+                </div>
+                <div class="field-row">
+                  <label for="flooring_type">Flooring type:</label>
+                  <div id="flooring_type"></div>
+                </div>
+                <div class="field-row">
+                  <label for="basement">Basement:</label>
+                  <div id="basement"></div>
+                </div>
+                <div class="field-row">
+                  <label for="fireplace">Fireplace:</label>
+                  <div id="fireplace"></div>
+                </div>
+              </div>
+
+              <div class="column" id="propertyFacts">
+                <div class="field-row">
+                  <label for="levels">Number of levels:</label>
+                  <div id="levels"></div>
+                </div>
+                <div class="field-row">
+                  <label for="parcel_number">Parcel number:</label>
+                  <div id="parcel_number"></div>
+                </div>
+                <div class="field-row">
+                  <label for="special_conditions">Special conditions:</label>
+                  <div id="special_conditions"></div>
+                </div>
+                <div class="field-row">
+                  <label for="size_lot">Lot size:</label>
+                  <div id="size_lot"></div>
+                </div>
+                <div class="field-row">
+                  <label for="price_per_squarefeet">Price per sqft:</label>
+                  <div id="price_per_squarefeet"></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="two-column-container">
+              <div class="column" id="construction">
+                <div class="field-row">
+                  <label for="built_in_year">Built in year:</label>
+                  <div id="built_in_year"></div>
+                </div>
+                <div class="field-row">
+                  <label for="home_type">Home type:</label>
+                  <div id="home_type"></div>
+                </div>
+                <div class="field-row">
+                  <label for="materials">Materials:</label>
+                  <div id="materials"></div>
+                </div>
+              </div>
+
+              <div class="column" id="utilities">
+                <div class="field-row">
+                  <label for="sewer_type">Sewer type:</label>
+                  <div id="sewer_type"></div>
+                </div>
+                <div class="field-row">
+                  <label for="water_type">Water type:</label>
+                  <div id="water_type"></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="two-column-container">
+              <div class="column" id="communityHoa">
+                <div class="field-row">
+                  <label for="hoa_cost">HOA cost:</label>
+                  <div id="hoa_cost"></div>
+                </div>
+                <div class="field-row">
+                  <label for="location">HOA location:</label>
+                  <div id="location"></div>
+                </div>
+              </div>
+
+              <div class="column" id="nearbySchools">
+                <div class="field-row">
+                  <label for="school_name">School name:</label>
+                  <div id="school_name"></div>
+                </div>
+                <div class="field-row">
+                  <label for="school_grade">School grade:</label>
+                  <div id="school_grade"></div>
+                </div>
+                <div class="field-row">
+                  <label for="school_distance">School distance:</label>
+                  <div id="school_distance"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+    </main>  
+  </div>
+</body>
+</html>
