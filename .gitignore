@@ -1,4 +1,7 @@
 # VSCode
 .vscode
 backend/img/*
+!backend/img/.gitkeep
+
 backend/houseThumbnail/*
+!backend/houseThumbnail/.gitkeep
