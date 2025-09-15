@@ -1,3 +1,6 @@
+window.realtorapp = window.realtorapp || {};
+const { getOpenCageLeafletKey } = window.realtorapp.api;
+
 const stateTextArray = [
     "For Rent",
     "For Sale",
@@ -19,7 +22,7 @@ function init() {
     let houseString = getQueryParam("house");
     let house = JSON.parse(houseString);
 
-    fetch(`http://127.0.0.1/wordpress/realtorapp/backend/php/get_property_pictures.php?id=${house.id}`)
+    fetch(`../php/get_property_pictures.php?id=${house.id}`)
         .then(response => response.json())
         .then(images => {
 
@@ -85,7 +88,7 @@ function init() {
             }
         }
 
-        $.post("http://127.0.0.1/wordpress/realtorapp/backend/php/increment_views.php", {
+        $.post("../php/increment_views.php", {
             id: house.id
         }).then(response => {
             console.log("View count incremented:", response);
@@ -115,7 +118,7 @@ function init() {
         } else {
             let fullAddress = `${house.address_street} ${house.address_apartment}, ${house.address_city}, ${house.address_state}, ${house.address_zip}`;
 
-            let api_key = '7df2980db5ee44cb86683f9b54a13371';
+            let api_key = getOpenCageLeafletKey();
 
             let request_url = 'https://api.opencagedata.com/geocode/v1/json'
                 + '?q=' + encodeURIComponent(fullAddress)
@@ -131,7 +134,7 @@ function init() {
                         .addTo(map)
                         .bindPopup(`<b>${house.address_street}</b><br>${house.address_city}`);
 
-                    $.post("http://127.0.0.1/wordpress/realtorapp/backend/php/update_coordinates.php", {
+                    $.post("../php/update_coordinates.php", {
                         id: house.id,
                         latitude: coords.lat,
                         longitude: coords.lng

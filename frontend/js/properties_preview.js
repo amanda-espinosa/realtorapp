@@ -65,7 +65,6 @@
             houseAddress.textContent = formatAddress(house);
             propertyTextContainer.appendChild(houseAddress);
 
-            // Ask the map module to handle marker/geocode
             putMarkerOrGeocode(house, formatAddress);
 
             container.appendChild(propertyContainer);

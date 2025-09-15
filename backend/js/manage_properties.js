@@ -1,3 +1,6 @@
+window.realtorapp = window.realtorapp || {};
+const { getOpenCageLeafletKey } = window.realtorapp.api;
+
 const previewContentUrl = "../php/list_properties.php";
 const numberOfHouses = 8;
 let currentPage = 1;
@@ -11,7 +14,7 @@ let stateTextArray = [
 ];
 
 const FL_BOUNDS = { minLat: 24.3, maxLat: 31.1, minLng: -87.7, maxLng: -79.8 };
-const OPEN_CAGE_KEY = '7df2980db5ee44cb86683f9b54a13371';
+const OPEN_CAGE_KEY = getOpenCageLeafletKey();
 
 function formatAddress(house) {
     const parts = [
@@ -73,7 +76,7 @@ async function putMarkerOrGeocode(house) {
                 .addTo(map)
                 .bindPopup(`<b>${house.address_street}</b><br>${house.address_city}`);
 
-            $.post("http://127.0.0.1/wordpress/realtorapp/backend/php/update_coordinates.php", {
+            $.post("../php/update_coordinates.php", {
                 id: house.id,
                 latitude: gLat,
                 longitude: gLng
@@ -115,7 +118,7 @@ function createPreviewContent(housesArray) {
         let picture = document.createElement("div");
         picture.className = "picture";
 
-        let thumbnailPath = `http://127.0.0.1/wordpress/realtorapp/backend/houseThumbnail/${house.id}/thumbnail.jpg`;
+        let thumbnailPath = `../houseThumbnail/${house.id}/thumbnail.jpg`;
         picture.style.backgroundImage = `url(${thumbnailPath})`;
         propertyContainer.appendChild(picture);
 
@@ -149,7 +152,7 @@ function createPreviewContent(housesArray) {
             e.stopPropagation();
             if (!confirm("Really delete this property?")) return;
             $.post(
-                "http://127.0.0.1/wordpress/realtorapp/backend/php/delete_property.php",
+                "../php/delete_property.php",
                 { id: house.id }
             )
                 .done(resp => {

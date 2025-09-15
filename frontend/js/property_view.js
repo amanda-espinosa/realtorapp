@@ -1,3 +1,6 @@
+window.realtorapp = window.realtorapp || {};
+const { getOpenCageLeafletKey } = window.realtorapp.api;
+
 const stateTextArray = [
     "For Rent",
     "For Sale",
@@ -8,9 +11,6 @@ const stateTextArray = [
 
 window.addEventListener("DOMContentLoaded", init);
 function init() {
-    //const url = window.location.href;
-
-    //Property section
     function getQueryParam(param) {
         let urlParams = new URLSearchParams(window.location.search);
         return urlParams.get(param);
@@ -115,7 +115,7 @@ function init() {
         } else {
             let fullAddress = `${house.address_street} ${house.address_apartment}, ${house.address_city}, ${house.address_state}, ${house.address_zip}`;
 
-            let api_key = '7df2980db5ee44cb86683f9b54a13371';
+            let api_key = getOpenCageLeafletKey();
 
             let request_url = 'https://api.opencagedata.com/geocode/v1/json'
                 + '?q=' + encodeURIComponent(fullAddress)
