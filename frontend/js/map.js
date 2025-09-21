@@ -1,59 +1,54 @@
-// map.js
-window.realtorapp = window.realtorapp || {};
-const { getOpenCageLeafletKey } = window.realtorapp.api;
+const map = {
+    FL_BOUNDS: { minLat: 24.3, maxLat: 31.1, minLng: -87.7, maxLng: -79.8 },
+    OPEN_CAGE_KEY: api.getOpenCageLeafletKey(),
+    map: null,
+    markerLayer: null,
 
-window.realtorapp.map = (function () {
-    const FL_BOUNDS = { minLat: 24.3, maxLat: 31.1, minLng: -87.7, maxLng: -79.8 };
-    const OPEN_CAGE_KEY = getOpenCageLeafletKey();
-
-    let map = null;
-    let markerLayer = null;
-
-    function isValidCoords(lat, lng) {
+    isValidCoords: function (lat, lng) {
         const la = Number(lat), ln = Number(lng);
         if (!Number.isFinite(la) || !Number.isFinite(ln)) return false;
-        return la >= FL_BOUNDS.minLat && la <= FL_BOUNDS.maxLat &&
-            ln >= FL_BOUNDS.minLng && ln <= FL_BOUNDS.maxLng;
-    }
+        return la >= this.FL_BOUNDS.minLat && la <= this.FL_BOUNDS.maxLat &&
+            ln >= this.FL_BOUNDS.minLng && ln <= this.FL_BOUNDS.maxLng;
+    },
 
-    async function geocodeAddress(address) {
+    geocodeAddress: async function (address) {
         const url = 'https://api.opencagedata.com/geocode/v1/json'
             + '?q=' + encodeURIComponent(address)
-            + '&key=' + OPEN_CAGE_KEY
+            + '&key=' + this.OPEN_CAGE_KEY
             + '&no_annotations=1';
         const res = await fetch(url);
         const data = await res.json();
         if (!data.results || !data.results[0]) throw new Error('No geocode results');
         const g = data.results[0].geometry;
         return { lat: g.lat, lng: g.lng };
-    }
+    },
 
-    function initMap(containerId = 'map') {
-        map = L.map(containerId).setView([26.7153, -80.0534], 8);
+    initMap: function (containerId = 'map') {
+        let generalMap = L.map(containerId).setView([26.7153, -80.0534], 8);
         L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
             maxZoom: 19,
             attribution: '&copy; OpenStreetMap'
-        }).addTo(map);
+        }).addTo(generalMap);
 
-        markerLayer = L.layerGroup().addTo(map);
-    }
+        markerLayer = L.layerGroup().addTo(generalMap);
+    },
 
-    function clearMarkers() {
+    clearMarkers: function () {
         if (markerLayer) markerLayer.clearLayers();
-    }
+    },
 
-    function addHouseMarker(house, lat, lng) {
+    addHouseMarker: function (house, lat, lng) {
         if (!markerLayer) return;
         L.marker([Number(lat), Number(lng)])
             .addTo(markerLayer)
             .bindPopup(`<b>${house.address_street ?? ""}</b><br>${house.address_city ?? ""}`);
-    }
+    },
 
-    async function putMarkerOrGeocode(house, formatAddressFn) {
+    putMarkerOrGeocode: async function (house, formatAddressFn) {
         const lat = house.latitude, lng = house.longitude;
 
-        if (isValidCoords(lat, lng)) {
-            addHouseMarker(house, lat, lng);
+        if (this.isValidCoords(lat, lng)) {
+            this.addHouseMarker(house, lat, lng);
             return;
         }
 
@@ -65,20 +60,57 @@ window.realtorapp.map = (function () {
 
         try {
             const { lat: gLat, lng: gLng } = await geocodeAddress(fullAddress);
-            if (isValidCoords(gLat, gLng)) {
-                addHouseMarker(house, gLat, gLng);
+            if (this.isValidCoords(gLat, gLng)) {
+                this.addHouseMarker(house, gLat, gLng);
             } else {
                 console.warn('Geocoded coords out of FL bounds for id:', house.id, gLat, gLng);
             }
         } catch (err) {
             console.error('Geocoding error for id:', house.id, err);
         }
-    }
+    },
 
-    return {
-        initMap,
-        clearMarkers,
-        addHouseMarker,
-        putMarkerOrGeocode
-    };
-})();
+    initPropertyMap: function (house) {
+        let propertyMap = L.map('map').setView([house.latitude, house.longitude], 11);
+
+        L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19,
+            attribution: '&copy; OpenStreetMap'
+        }).addTo(propertyMap);
+
+        if (house.latitude && house.longitude) {
+            L.marker([house.latitude, house.longitude])
+                .addTo(propertyMap)
+                .bindPopup(`<b>${house.address_street}</b><br>${house.address_city}`);
+        } else {
+            let fullAddress = `${house.address_street} ${house.address_apartment}, ${house.address_city}, ${house.address_state}, ${house.address_zip}`;
+
+            let api_key = realtorapp.api.getOpenCageLeafletKey();
+
+            let request_url = 'https://api.opencagedata.com/geocode/v1/json'
+                + '?q=' + encodeURIComponent(fullAddress)
+                + '&key=' + api_key
+                + '&no_annotations=1';
+
+            fetch(request_url)
+                .then(response => response.json())
+                .then(data => {
+                    const coords = data.results[0].geometry;
+
+                    L.marker([coords.lat, coords.lng])
+                        .addTo(propertyMap)
+                        .bindPopup(`<b>${house.address_street}</b><br>${house.address_city}`);
+
+                    $.post("../../backend/php/update_coordinates.php", {
+                        id: house.id,
+                        latitude: coords.lat,
+                        longitude: coords.lng
+                    }).then(() => {
+                        console.log("coordinates saved for house ID: ", house.id);
+                    });
+                })
+                .catch(err => console.error('Geocoding error:', err));
+        }
+        return propertyMap;
+    }
+};

@@ -140,7 +140,7 @@ function createPreviewContent(housesArray) {
 
         let editIcon = document.createElement("img");
         editIcon.className = "editIcon";
-        editIcon.src = "../img/edit.png";
+        editIcon.src = "../../frontend/img/edit.png";
         editIcon.alt = "edit";
         editButton.appendChild(editIcon);
 
@@ -167,7 +167,7 @@ function createPreviewContent(housesArray) {
 
         let deleteIcon = document.createElement("img");
         deleteIcon.className = "deleteIcon";
-        deleteIcon.src = "../img/delete.png";
+        deleteIcon.src = "../../frontend/img/delete.png";
         deleteIcon.alt = "delete";
         deleteButton.appendChild(deleteIcon);
 

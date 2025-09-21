@@ -1,6 +1,5 @@
-window.realtorapp = window.realtorapp || {};
-window.realtorapp.pagination = (function () {
-    function renderPaginationControls({ container, currentPage, totalPages, onChange }) {
+const pagination = {
+    renderPaginationControls: function ({ container, currentPage, totalPages, onChange }) {
         container.innerHTML = "";
 
         const createBtn = (text, page, disabled = false, highlight = false) => {
@@ -54,6 +53,4 @@ window.realtorapp.pagination = (function () {
         container.appendChild(createBtn("Next ›", currentPage + 1, currentPage === totalPages));
         container.appendChild(createBtn("Last »", totalPages, currentPage === totalPages));
     }
-
-    return { renderPaginationControls };
-})();
+};
