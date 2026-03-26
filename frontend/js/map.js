@@ -1,6 +1,6 @@
 const map = {
     FL_BOUNDS: { minLat: 24.3, maxLat: 31.1, minLng: -87.7, maxLng: -79.8 },
-    OPEN_CAGE_KEY: api.getOpenCageLeafletKey(),
+    OPEN_CAGE_KEY: null,
     map: null,
     markerLayer: null,
 
@@ -14,7 +14,7 @@ const map = {
     geocodeAddress: async function (address) {
         const url = 'https://api.opencagedata.com/geocode/v1/json'
             + '?q=' + encodeURIComponent(address)
-            + '&key=' + this.OPEN_CAGE_KEY
+            + '&key=' + OPEN_CAGE_KEY
             + '&no_annotations=1';
         const res = await fetch(url);
         const data = await res.json();
@@ -23,7 +23,9 @@ const map = {
         return { lat: g.lat, lng: g.lng };
     },
 
-    initMap: function (containerId = 'map') {
+    initMap: async function (containerId = 'map') {
+        this.OPEN_CAGE_KEY = (await api.getOpenCageLeafletKey()).trim();
+        console.log(this.OPEN_CAGE_KEY);
         let generalMap = L.map(containerId).setView([26.7153, -80.0534], 8);
         L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
             maxZoom: 19,
@@ -59,7 +61,7 @@ const map = {
         }
 
         try {
-            const { lat: gLat, lng: gLng } = await geocodeAddress(fullAddress);
+            const { lat: gLat, lng: gLng } = await this.geocodeAddress(fullAddress);
             if (this.isValidCoords(gLat, gLng)) {
                 this.addHouseMarker(house, gLat, gLng);
             } else {
@@ -70,7 +72,7 @@ const map = {
         }
     },
 
-    initPropertyMap: function (house) {
+    initPropertyMap: async function (house) {
         let propertyMap = L.map('map').setView([house.latitude, house.longitude], 11);
 
         L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -85,7 +87,7 @@ const map = {
         } else {
             let fullAddress = `${house.address_street} ${house.address_apartment}, ${house.address_city}, ${house.address_state}, ${house.address_zip}`;
 
-            let api_key = realtorapp.api.getOpenCageLeafletKey();
+            let api_key = await realtorapp.api.getOpenCageLeafletKey();
 
             let request_url = 'https://api.opencagedata.com/geocode/v1/json'
                 + '?q=' + encodeURIComponent(fullAddress)
@@ -101,7 +103,7 @@ const map = {
                         .addTo(propertyMap)
                         .bindPopup(`<b>${house.address_street}</b><br>${house.address_city}`);
 
-                    $.post("../../backend/php/update_coordinates.php", {
+                    $.post("../../backend/php/main.php?action=updateCoordinates", {
                         id: house.id,
                         latitude: coords.lat,
                         longitude: coords.lng

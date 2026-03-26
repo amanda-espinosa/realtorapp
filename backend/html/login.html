@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>User Login</title>
+  <link rel="stylesheet" href="../css/login.css">
+</head>
+<body>
+  <main>
+    <div id="mainContainer">
+    </div> 
+    <div id="formContainer">
+      <form action="../php/main.php?action=login" method="post">
+        <h2>Log in to your account</h2>
+          <label>Email:</label>
+          <input type="email" name="email" placeholder="Email" required>
+          <label>Password:</label>
+          <input type="password" name="password" placeholder="Password" required>
+        <label>
+          <input class="rememberMe" type="checkbox" name="remember"> Remember me
+        </label><br><br>
+        <button type="submit">Login</button>
+      </form>
+    </div>
+  </main>
+</body>
+</html>

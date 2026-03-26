@@ -33,11 +33,6 @@
     }
 
     nav {
-        /*position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        z-index: 9999;*/
         position: relative;
         align-items: center;
         padding: 10px 20px;
@@ -127,6 +122,9 @@
         height: calc(100% - 10px);
     }
 
+    #info {
+        padding: 3em 1em;
+    }
 
     #property {
         margin: 10px 0;
@@ -205,7 +203,7 @@
         align-content: flex-start;
         justify-content: space-between;
         padding: 30px 30px;
-        height: 600px;
+        height: 50em;
         width: 100%;
         gap: 20px;
     }

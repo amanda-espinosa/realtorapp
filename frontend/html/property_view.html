@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <link rel="stylesheet" href="../../css/jquery.fancybox.min.css">
-    <link rel="stylesheet" href="../../css/bootstrap.min.css">
+    <link rel="stylesheet" href="../../css/vendor/bootstrap-v5.3.8/bootstrap.min.css">
 
     <link rel="stylesheet" href="../css/property_view.css">
     <!-- Phones: up to 768px -->
@@ -14,18 +14,12 @@
     <link rel="stylesheet" href="../css/property_view_tablet.css" media="only screen and (min-width: 768px) and (max-width: 991.98px)">
     <!-- Desktops: 992px and up -->
     <link rel="stylesheet" href="../css/property_view_desktop.css" media="only screen and (min-width: 992px)">
-
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@100..900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="crossorigin=""/> 
+    <link rel="stylesheet" href="../css/property_view.css">
+    <link rel="stylesheet" href="../../css/leaflet.css">
+    
     <script src="../../js/jquery-3.7.1.js"></script>
     <script src="../../js/jquery.fancybox.min.js"></script>
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
-     integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
-     crossorigin=""></script>
+    <script src="../../js/leaflet.js"></script>
     <script src="../js/api.js"></script>
     <script src="../js/map.js"></script>
     <script src="../js/pagination.js"></script>
@@ -94,7 +88,7 @@
             <div id="map"></div>
           </div>
           <div id="formContainer">
-            <form action="../../backend/php/sendform.php" method="post">
+            <form action="../../backend/php/main.php?action=sendForm" method="post">
                 <p class="image-text">Contact Agent</p>
                 <label for="name">Name:</label><br>
                 <input type="text" name="name" id="name"><br><br>

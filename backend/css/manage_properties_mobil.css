@@ -1,5 +1,28 @@
 @media only screen and (max-width: 768px) {
 
+    nav {
+        width: 100%;
+        padding: 10px 10px;
+    }
+
+    nav ul {
+        margin: 0;
+        padding-right: 20px;
+        display: flex;
+        flex-direction: row;
+        justify-content: flex-end;
+        gap: 5px;
+    }
+
+    nav li {
+        display: inline-block;
+        width: fit-content;
+    }
+
+    nav a {
+        padding: 8px 12px;
+    }
+
     #main-info {
         flex-direction: column;
         height: auto;
@@ -116,17 +139,6 @@
         flex-direction: row;
         gap: 5px;
         padding: 0 10px;
-    }
-
-    #addProperty {
-        width: 30%;
-        height: 100%;
-    }
-
-    .addPropertyButton {
-        height: 100%;
-        padding: 10px 10px;
-        margin: 4px 2px;
     }
 
     #paginationControls button .btn {

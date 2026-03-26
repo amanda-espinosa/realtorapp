@@ -1,7 +1,34 @@
+@font-face {
+    font-family: "Sedan";
+    src: url("../../frontend/fonts/Sedan/Sedan-Regular.ttf") format("truetype");
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: "Google-Sans";
+    src: url("../../frontend/fonts/Google_Sans/static/GoogleSans-Regular.ttf") format("truetype");
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+}
+
+:root {
+    --glass-bg: rgba(255, 255, 255, .22);
+    --glass-bg-strong: rgba(255, 255, 255, .58);
+    --glass-border: rgba(255, 255, 255, .45);
+    --glass-shadow: 0 18px 45px rgba(0, 0, 0, .20),
+        inset 0 1px 0 rgba(255, 255, 255, .65),
+        inset 0 -1px 0 rgba(255, 255, 255, .18);
+    --glass-blur: blur(12px);
+}
+
 * {
     box-sizing: border-box;
     margin: 0;
     padding: 0;
+    font-family: "Google-Sans", "Sedan", sans-serif;
 }
 
 html {
@@ -10,17 +37,54 @@ html {
 
 body {
     width: 100%;
+    height: 100%;
     font-size: 1.6rem;
-    font-family: "Roboto Slab", serif;
     font-optical-sizing: auto;
     font-weight: 400;
     font-style: normal;
 }
 
-.box-left {
-    border: 1px solid #ccc;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    background-color: #ffffff;
+nav {
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    backdrop-filter: var(--glass-blur);
+    -webkit-backdrop-filter: var(--glass-blur);
+    box-shadow: var(--glass-shadow);
+}
+
+li {
+    list-style: none;
+}
+
+.box-left,
+.box-right {
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    backdrop-filter: var(--glass-blur);
+    -webkit-backdrop-filter: var(--glass-blur);
+    box-shadow: var(--glass-shadow);
+    border-radius: 16px;
+}
+
+nav a,
+.buttonsContainer button,
+#paginationControls .btn {
+    background: rgba(255, 255, 255, .30);
+    border: 1px solid var(--glass-border);
+    backdrop-filter: var(--glass-blur);
+    -webkit-backdrop-filter: var(--glass-blur);
+    box-shadow: var(--glass-shadow);
+    border-radius: 14px;
+    color: #0f6e67;
+    list-style: none;
+    text-decoration: none;
+}
+
+nav a:hover,
+.buttonsContainer button:hover,
+#paginationControls .btn:hover {
+    background: rgba(255, 255, 255, .62);
+    transform: translateY(-1px);
 }
 
 .box-left::-webkit-scrollbar {
@@ -36,18 +100,31 @@ body {
 }
 
 .box-right {
+    border: 1px solid #ccc;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     background-color: #f7f7f7;
 }
 
 .property {
-    background: #fff;
-    color: #222;
-    box-shadow: 0 8px 20px rgba(0, 0, 0, .05);
-    transition: box-shadow .2s ease;
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    backdrop-filter: var(--glass-blur);
+    -webkit-backdrop-filter: var(--glass-blur);
+    box-shadow: var(--glass-shadow);
+    border-radius: 16px;
+    overflow: hidden;
+    color: #1f2a37;
+}
+
+.buttonsContainer button {
+    font-size: 24px;
+    justify-content: center;
 }
 
 .property:hover {
-    box-shadow: 0 16px 32px rgba(0, 0, 0, .12);
+    box-shadow: 0 22px 55px rgba(0, 0, 0, .25),
+        inset 0 1px 0 rgba(255, 255, 255, .65),
+        inset 0 -1px 0 rgba(255, 255, 255, .18);
 }
 
 .property:hover .picture {
@@ -61,11 +138,6 @@ body {
 
 .propertyTextContainer {
     background: #fff;
-}
-
-.buttonsContainer button {
-    background-color: #aad3df;
-    border: 2px solid rgb(61, 61, 61);
 }
 
 .houseAddress {
@@ -85,35 +157,71 @@ body {
 }
 
 #paginationControls .btn {
-    background-color: #7fc2d7;
-    color: #000;
-    font-family: "Roboto Slab", sans-serif;
+    background: rgba(255, 255, 255, 0.22);
+    color: #0f6e67;
+
     font-size: 16px;
-    font-weight: 400;
+    font-weight: 500;
     text-align: center;
     cursor: pointer;
-    border: 2px solid rgb(65, 65, 65);
-    border-radius: 0;
+
+    border: 1px solid rgba(255, 255, 255, 0.45);
+    border-radius: 14px;
+
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+
+    box-shadow:
+        0 18px 45px rgba(0, 0, 0, 0.20),
+        inset 0 1px 0 rgba(255, 255, 255, 0.65),
+        inset 0 -1px 0 rgba(255, 255, 255, 0.18);
+
+    transition: transform .15s ease, box-shadow .3s ease, background-color .3s ease, border-color .3s ease, color .3s ease;
 }
 
-.addPropertyButton {
-    background-color: #7fc2d7;
-    color: #000;
-    font-family: "Roboto Slab", sans-serif;
-    font-size: 16px;
-    font-weight: 400;
-    text-align: center;
-    cursor: pointer;
-    border: 2px solid rgb(65, 65, 65);
+#paginationControls .btn:hover {
+    background: rgba(255, 255, 255, 0.62);
+    border-color: rgba(0, 255, 183, 0.45);
+    color: #007971f5;
+    transform: translateY(-1px);
+}
+
+#paginationControls .btn.active,
+#paginationControls .btn:active {
+    background: rgba(255, 255, 255, 0.72);
+    transform: translateY(0);
 }
 
 #paginationControls .ellipsis {
-    color: #000;
+    color: #0f6e67;
     font-size: 16px;
-    font-weight: 300;
+    font-weight: 400;
+    padding: 0 8px;
 }
 
 .btn-primary {
-    background-color: #aad3df;
-    color: #fff;
+    background: rgba(255, 255, 255, 0.22) !important;
+    color: #0f6e67 !important;
+    border: 1px solid rgba(255, 255, 255, 0.45) !important;
+
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+
+    box-shadow:
+        0 18px 45px rgba(0, 0, 0, 0.20),
+        inset 0 1px 0 rgba(255, 255, 255, 0.65),
+        inset 0 -1px 0 rgba(255, 255, 255, 0.18);
+}
+
+.btn-primary:hover {
+    background: rgba(255, 255, 255, 0.62) !important;
+    color: #007971f5 !important;
+    border-color: rgba(0, 255, 183, 0.45) !important;
+}
+
+.leaflet-popup-content {
+    margin: 7px 7px;
+    line-height: 1.3;
+    font-size: 1.6em;
+    width: 100px;
 }

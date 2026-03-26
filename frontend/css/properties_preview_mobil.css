@@ -91,4 +91,8 @@
         font-size: 1.4rem;
         margin: 3px 1px;
     }
+
+    #paginationControls {
+        padding: 1em 2em;
+    }
 }

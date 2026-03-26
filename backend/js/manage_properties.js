@@ -1,9 +1,16 @@
-window.realtorapp = window.realtorapp || {};
-const { getOpenCageLeafletKey } = window.realtorapp.api;
+const openCageKeyUrl = "../php/main.php?action=getOpenCageKey";
 
-const previewContentUrl = "../php/list_properties.php";
+const previewContentUrl = "../php/main.php?action=getPropertyList";
 const numberOfHouses = 8;
 let currentPage = 1;
+
+async function getOpenCageLeafletKey() {
+    return $.ajax({
+        url: openCageKeyUrl,
+        method: "GET",
+        dataType: "text"
+    });
+}
 
 let stateTextArray = [
     "House for rent",
@@ -14,7 +21,7 @@ let stateTextArray = [
 ];
 
 const FL_BOUNDS = { minLat: 24.3, maxLat: 31.1, minLng: -87.7, maxLng: -79.8 };
-const OPEN_CAGE_KEY = getOpenCageLeafletKey();
+let OPEN_CAGE_KEY;
 
 function formatAddress(house) {
     const parts = [
@@ -37,10 +44,14 @@ function isValidCoords(lat, lng) {
 }
 
 async function geocodeAddress(address) {
+    console.log(OPEN_CAGE_KEY);
+    console.log(encodeURIComponent(address));
     const url = 'https://api.opencagedata.com/geocode/v1/json'
         + '?q=' + encodeURIComponent(address)
         + '&key=' + OPEN_CAGE_KEY
         + '&no_annotations=1';
+
+    console.log(url);
 
     const res = await fetch(url);
     const data = await res.json();
@@ -76,7 +87,7 @@ async function putMarkerOrGeocode(house) {
                 .addTo(map)
                 .bindPopup(`<b>${house.address_street}</b><br>${house.address_city}`);
 
-            $.post("../php/update_coordinates.php", {
+            $.post("../php/main.php?action=updateCoordinates", {
                 id: house.id,
                 latitude: gLat,
                 longitude: gLng
@@ -93,7 +104,6 @@ async function putMarkerOrGeocode(house) {
     }
 }
 
-
 let map;
 function initMap() {
     map = L.map('map').setView([26.7153, -80.0534], 8);
@@ -109,11 +119,9 @@ function createPreviewContent(housesArray) {
     container.innerHTML = "";
 
     housesArray.forEach(function (house) {
+        console.log(house);
         let propertyContainer = document.createElement("div");
         propertyContainer.className = "property";
-        propertyContainer.addEventListener("click", function () {
-            window.location.href = `property_manager.html?house=${JSON.stringify(house)}`;
-        });
 
         let picture = document.createElement("div");
         picture.className = "picture";
@@ -135,29 +143,26 @@ function createPreviewContent(housesArray) {
         mainInfoContainer.appendChild(buttonsContainer);
 
         let editButton = document.createElement("button");
-        editButton.className = "editButton";
+        editButton.classList.add("editButton", "bi", "bi-pencil", "realtor-btn");
+        editButton.addEventListener("click", function () {
+            window.location.href = `manage_property.php?house=${JSON.stringify(house)}`;
+        });
         buttonsContainer.appendChild(editButton);
 
-        let editIcon = document.createElement("img");
-        editIcon.className = "editIcon";
-        editIcon.src = "../../frontend/img/edit.png";
-        editIcon.alt = "edit";
-        editButton.appendChild(editIcon);
-
         let deleteButton = document.createElement("button");
-        deleteButton.className = "deleteButton";
+        deleteButton.classList.add("deleteButton", "bi", "bi-trash", "realtor-btn");
         buttonsContainer.appendChild(deleteButton);
 
         deleteButton.addEventListener("click", e => {
             e.stopPropagation();
             if (!confirm("Really delete this property?")) return;
             $.post(
-                "../php/delete_property.php",
+                "../php/main.php?action=deleteProperty",
                 { id: house.id }
             )
                 .done(resp => {
                     if (resp.success) {
-                        property.remove();
+                        propertyContainer.remove();
                     } else {
                         alert("Delete failed: " + resp.error);
                     }
@@ -165,19 +170,16 @@ function createPreviewContent(housesArray) {
                 .fail(() => alert("Server error on delete"));
         });
 
-        let deleteIcon = document.createElement("img");
-        deleteIcon.className = "deleteIcon";
-        deleteIcon.src = "../../frontend/img/delete.png";
-        deleteIcon.alt = "delete";
-        deleteButton.appendChild(deleteIcon);
-
         let houseMainInfo = document.createElement("div");
         houseMainInfo.className = "houseMainInfo";
         propertyTextContainer.appendChild(houseMainInfo);
 
         let price = document.createElement("div");
         price.className = "price";
-        price.innerHTML = "$" + house.price;
+        price.innerHTML = "$" + parseFloat(house.price).toLocaleString('en-US', {
+            minimumFractionDigits: 0,
+            maximumFractionDigits: 2
+        });
         houseMainInfo.appendChild(price);
 
         let state = document.createElement("div");
@@ -245,6 +247,11 @@ function getPreviewContent() {
         data: { numberOfHouses: numberOfHouses, startingPoint: startingPoint },
         dataType: "json",
         success: function (data) {
+            if (typeof data === "string") {
+                data = JSON.parse(data);
+                console.log("PARSED DATA:", data);
+            }
+
             const totalRows = data.totalRows;
             const totalPages = Math.ceil(totalRows / numberOfHouses);
             console.log('Total rows in DB:', data.totalRows);
@@ -321,17 +328,54 @@ function renderPaginationControls(totalPages) {
 
 }
 
-function displayAddPropertyContainer() {
-    let addProperty = document.getElementById("addProperty");
-
-    let addPropertyButton = document.createElement("button");
-    addPropertyButton.className = "addPropertyButton";
-    addPropertyButton.innerHTML = "+ add Property";
-    addProperty.appendChild(addPropertyButton);
-}
-
-$(document).ready(function () {
+$(document).ready(async function () {
+    OPEN_CAGE_KEY = await getOpenCageLeafletKey();
     getPreviewContent();
-    initMap();
-    displayAddPropertyContainer();
+    try {
+        initMap();
+    } catch (err) {
+        console.log(`An error has occurred: ${err.message}`);
+    }
+
+    let addPropertyButton = document.getElementById("addProperty");
+    addPropertyButton.addEventListener("click", function (e) {
+        e.preventDefault();
+        let house = {
+            id: "",
+            price: "",
+            number_of_rooms: "",
+            number_of_bathrooms: "",
+            area_sqft: "",
+            property_state: "",
+            address_street: "",
+            address_apartment: "",
+            address_city: "",
+            address_state: "",
+            address_zip: "",
+            description: "",
+            heating_type: "",
+            cooling_type: "",
+            appliances: "",
+            flooring_type: "",
+            basement: "",
+            fireplace: "",
+            levels: "",
+            parcel_number: "",
+            special_conditions: "",
+            size_lot: null,
+            price_per_squarefeet: null,
+            built_in_year: "",
+            home_type: "",
+            materials: "",
+            sewer_type: "",
+            water_type: "",
+            hoa_cost: "",
+            enrollment_date: "2025-06-01",
+            latitude: "",
+            longitude: "",
+            enrollment_datetime_backup: "2025-06-01 10:43:51",
+            views_count: "0"
+        };
+        window.location.href = `manage_property.php?house=${JSON.stringify(house)}`;
+    });
 });

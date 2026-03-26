@@ -1,0 +1,144 @@
+@font-face {
+    font-family: "Sedan";
+    src: url("../../frontend/fonts/Sedan/Sedan-Regular.ttf") format("truetype");
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: "Google-Sans";
+    src: url("../../frontend/fonts/Google_Sans/static/GoogleSans-Regular.ttf") format("truetype");
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+}
+
+* {
+    padding: 0;
+    margin: 0;
+    font-family: "Google-Sans", "Sedan", sans-serif;
+    transition-duration: .6s;
+    transition-timing-function: ease;
+}
+
+#mainContainer {
+    padding: 0;
+    margin: 0;
+    position: absolute;
+    height: 100vh;
+    width: 100vw;
+    background-image: url('../../frontend/img/house-bg1.jpg');
+    background-color: rgb(243, 243, 243);
+    background-repeat: no-repeat;
+    background-size: cover;
+    filter: blur(5px);
+    -webkit-filter: blur(5px);
+    z-index: 0;
+}
+
+#formContainer {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    top: 25%;
+    align-items: center;
+    z-index: 1;
+}
+
+form {
+    width: 20em;
+    padding: 60px 100px;
+
+    background-color: rgba(255, 255, 255, 0.22);
+    border-radius: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.45);
+
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+
+    box-shadow: 0 18px 45px rgba(0, 0, 0, 0.25),
+        inset 0 1px 0 rgba(255, 255, 255, 0.65),
+        inset 0 -1px 0 rgba(255, 255, 255, 0.18);
+
+    position: relative;
+    overflow: hidden;
+    transition: transform .2s ease, box-shadow .3s ease, border-color .3s ease;
+}
+
+form:hover {
+    background-color: rgba(255, 255, 255, 0.326);
+    border-radius: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.702);
+
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(12px);
+
+    box-shadow: 0 18px 45px rgba(0, 0, 0, 0.25),
+        inset 0 1px 0 rgba(255, 255, 255, 0.759),
+        inset 0 -1px 0 rgba(255, 255, 255, 0.723);
+
+    transform: translateY(-2px);
+}
+
+label {
+    display: block;
+    margin-right: 7px;
+}
+
+button {
+    padding: 9px 15px;
+    position: relative;
+    margin: 0 80%;
+    font-weight: bold;
+    color: #00ab9ff5;
+    background-color: rgba(255, 255, 255, 0.22);
+    border-radius: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.45);
+
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+
+    box-shadow: 0 18px 45px rgba(0, 0, 0, 0.25),
+        inset 0 1px 0 rgba(255, 255, 255, 0.65),
+        inset 0 -1px 0 rgba(255, 255, 255, 0.18);
+
+    transition: transform .2s ease, box-shadow .3s ease, border-color .3s ease;
+}
+
+.rememberMe {
+    margin-left: 6%;
+    padding: 7px 0;
+}
+
+button:hover {
+    position: relative;
+    margin: 0 80%;
+    font-weight: bold;
+    color: #007971f5;
+    background-color: rgba(255, 255, 255, 0.619);
+    border-radius: 16px;
+    border: 1px solid rgba(0, 255, 183, 0.45);
+
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+
+    box-shadow: 0 18px 45px rgba(80, 80, 80, 0.25),
+        inset 0 1px 0 rgba(195, 195, 195, 0.65),
+        inset 0 -1px 0 rgba(255, 255, 255, 0.531);
+
+    transition: transform .1s ease, box-shadow .3s ease, border-color .3s ease;
+}
+
+input[type=email],
+input[type=text],
+input[type=password] {
+    width: 100%;
+    padding: 12px;
+    margin: 8px 0;
+    display: inline-block;
+    border: 1px solid #ccc;
+    border-radius: 7px;
+    box-sizing: border-box;
+}

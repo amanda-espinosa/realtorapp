@@ -1,0 +1,207 @@
+@font-face {
+    font-family: "Sedan";
+    src: url("../../frontend/fonts/Sedan/Sedan-Regular.ttf") format("truetype");
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: "Google-Sans";
+    src: url("../../frontend/fonts/Google_Sans/static/GoogleSans-Regular.ttf") format("truetype");
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+}
+
+* {
+    font-family: "Google-Sans", "Sedan", sans-serif;
+}
+
+body {
+    background: #f5f7fb;
+}
+
+.header {
+    width: 100%;
+    height: 40vh;
+    display: flex;
+    flex-direction: row;
+    background-image: url('../../frontend/img/house-bg1.jpg');
+    background-color: rgb(243, 243, 243);
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: 50% 40%;
+}
+
+.pageTitle {
+    margin-top: 50px;
+    margin-left: 90px;
+    width: 80%;
+    font-weight: 600;
+    letter-spacing: .3px;
+    color: rgb(255, 255, 255);
+    font-size: 3em;
+}
+
+#logOutButton {
+    width: fit-content;
+    height: 3em;
+}
+
+#btnWrapperContainer {
+    display: flex;
+    flex-direction: row;
+    justify-content: end;
+    margin-right: 4em;
+}
+
+.realtorapp-btn {
+    padding: 9px 15px;
+    margin: 1em;
+    font-weight: bold;
+    color: #fffffff5;
+    border-radius: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.45);
+
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+
+    box-shadow: 0 18px 45px rgba(0, 0, 0, 0.25),
+        inset 0 1px 0 rgba(255, 255, 255, 0.65),
+        inset 0 -1px 0 rgba(255, 255, 255, 0.18);
+
+    transition: transform .2s ease, box-shadow .3s ease, border-color .3s ease;
+
+    text-decoration: none;
+    background-color: #e5e5e56a;
+}
+
+.realtorapp-btn:hover {
+    border: solid 1px #ffffff;
+    position: relative;
+    font-weight: bold;
+    color: #007971f5;
+
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+
+    box-shadow: 0 18px 45px rgba(80, 80, 80, 0.25),
+        inset 0 1px 0 rgba(195, 195, 195, 0.65),
+        inset 0 -1px 0 rgba(255, 255, 255, 0.531);
+
+    transition: transform .1s ease, box-shadow .3s ease, border-color .3s ease;
+}
+
+.container {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    margin: 40px;
+    min-width: 100%;
+}
+
+.action-btn {
+    width: 40px;
+    height: 40px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    line-height: 1;
+    --bs-btn-disabled-border-color: transparent;
+}
+
+.glass-table-wrap {
+    width: min(1200px, 94%), max(94%);
+    margin: -80px auto;
+    padding: 12px;
+    border-radius: 16px;
+    border: 1px solid rgba(255, 255, 255, .45);
+    background: rgba(255, 255, 255, .22);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    box-shadow:
+        0 18px 45px rgba(0, 0, 0, .20),
+        inset 0 1px 0 rgba(255, 255, 255, .65),
+        inset 0 -1px 0 rgba(255, 255, 255, .18);
+    position: relative;
+    top: -40px;
+}
+
+.glass-table-wrap .table {
+    border-collapse: separate;
+    border-spacing: 0;
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.glass-table-wrap .table.mb-0 {
+    margin-bottom: 0 !important;
+}
+
+.glass-table-wrap .table> :not(caption)>*>* {
+    border-bottom: 1px solid rgba(255, 255, 255, .45);
+}
+
+.glass-table-wrap thead th {
+    background: rgba(255, 255, 255, .58) !important;
+    color: #0f6e67;
+    border-bottom: 1px solid rgba(255, 255, 255, .70);
+}
+
+.glass-table-wrap tbody td {
+    background: rgba(255, 255, 255, .30);
+}
+
+.glass-table-wrap.table-hover tbody tr:hover td,
+.glass-table-wrap .table-hover tbody tr:hover td {
+    background: rgba(255, 255, 255, .52);
+}
+
+.realtorapp-btn-circle {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+
+    background-color: rgba(255, 255, 255, 0.22);
+    border: 1px solid rgba(255, 255, 255, 0.45);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+
+    box-shadow: 0 18px 45px rgba(0, 0, 0, 0.20),
+        inset 0 1px 0 rgba(255, 255, 255, 0.65),
+        inset 0 -1px 0 rgba(255, 255, 255, 0.18);
+
+    color: #c6b200f5;
+    cursor: pointer;
+}
+
+.realtorapp-btn-circle i {
+    font-size: 1.45rem;
+    line-height: 1;
+}
+
+.realtorapp-btn-circle:hover {
+    background-color: rgba(255, 255, 255, 0.62);
+    color: #007971f5;
+}
+
+.realtorapp-btn-circle:active {
+    transform: translateY(1px);
+}
+
+.realtorapp-disabled-btn {
+    color: #7A7A7A;
+}
+
+#notification {
+    position: fixed;
+    top: 150px;
+    left: 16px;
+    z-index: 9999;
+}

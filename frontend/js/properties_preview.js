@@ -1,4 +1,5 @@
 let currentPage = 1;
+const openCageKeyUrl = "../../backend/php/main.php?action=getOpenCageKey";
 
 function formatAddress(house) {
     return [house.address_street, house.address_apartment, house.address_city, house.address_state, house.address_zip]
@@ -7,11 +8,19 @@ function formatAddress(house) {
         .join(", ");
 }
 
+async function getOpenCageLeafletKey() {
+    const res = await fetch(openCageKeyUrl);
+    return res.text();
+}
+
 function createPreviewContent(housesArray) {
     const container = document.getElementById("houseListContainer");
     container.innerHTML = "";
-
-    realtorapp.map.clearMarkers();
+    try {
+        realtorapp.map.clearMarkers();
+    } catch (err) {
+        console.log(`An error has occurred: ${err.message}`);
+    }
 
     housesArray.forEach(function (house) {
         const propertyContainer = document.createElement("div");
@@ -38,7 +47,10 @@ function createPreviewContent(housesArray) {
 
         const price = document.createElement("div");
         price.className = "price";
-        price.textContent = "$" + house.price;
+        price.textContent = "$" + parseFloat(house.price).toLocaleString('en-US', {
+            minimumFractionDigits: 0,
+            maximumFractionDigits: 2
+        });
         houseMainInfo.appendChild(price);
 
         const state = document.createElement("div");
@@ -58,38 +70,46 @@ function createPreviewContent(housesArray) {
         houseAddress.textContent = formatAddress(house);
         propertyTextContainer.appendChild(houseAddress);
 
-        realtorapp.map.putMarkerOrGeocode(house, formatAddress);
+        try {
+            realtorapp.map.putMarkerOrGeocode(house, formatAddress);
+        } catch (err) {
+            console.log(`An error has occurred: ${err.message}`);
+        }
 
         container.appendChild(propertyContainer);
     });
 }
 
-function loadPage() {
-    realtorapp.api.getPreviewContent(currentPage)
-        .done(function (data) {
-            const totalRows = Number(data.totalRows || 0);
-            const totalPages = Math.max(1, Math.ceil(totalRows / realtorapp.api.numberOfHouses));
+async function loadPage() {
+    try {
+        const res = await fetch(`../../backend/php/main.php?action=getPropertyList&numberOfHouses=${realtorapp.api.numberOfHouses}&startingPoint=${(currentPage - 1) * realtorapp.api.numberOfHouses}`);
 
-            createPreviewContent(data.houses || []);
+        const data = await res.json();
 
-            realtorapp.pagination.renderPaginationControls({
-                container: document.getElementById("paginationControls"),
-                currentPage,
-                totalPages,
-                onChange: function (page) {
-                    currentPage = page;
-                    loadPage();
-                }
-            });
-        })
-        .fail(function (_xhr, _status, error) {
-            console.error("Error:", error);
-            document.getElementById("houseListContainer").innerHTML =
-                "<p style='color:red;'>Failed to load properties.</p>";
+        console.log("DATA: ", data);
+
+        const totalRows = Number(data.totalRows || 0);
+        const totalPages = Math.max(1, Math.ceil(totalRows / realtorapp.api.numberOfHouses));
+
+        createPreviewContent(data.houses || []);
+
+        realtorapp.pagination.renderPaginationControls({
+            container: document.getElementById("paginationControls"),
+            currentPage,
+            totalPages,
+            onChange: function (page) {
+                currentPage = page;
+                loadPage();
+            }
         });
+    } catch (error) {
+        console.error("Error:", error);
+        document.getElementById("houseListContainer").innerHTML =
+            "<p style='color:red;'>Failed to load properties.</p>";
+    }
 }
 
-$(document).ready(function () {
-    realtorapp.map.initMap('map');
+$(document).ready(async function () {
     loadPage();
+    await realtorapp.map.initMap('map');
 });

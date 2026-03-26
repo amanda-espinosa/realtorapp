@@ -1,0 +1,135 @@
+@font-face {
+    font-family: "Sedan";
+    src: url("../../frontend/fonts/Sedan/Sedan-Regular.ttf") format("truetype");
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: "Google-Sans";
+    src: url("../../frontend/fonts/Google_Sans/static/GoogleSans-Regular.ttf") format("truetype");
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+}
+
+* {
+    font-family: "Google-Sans", "Sedan", sans-serif;
+}
+
+body {
+    background: #f5f7fb;
+}
+
+.header {
+    width: 100%;
+    height: 60vh;
+    display: flex;
+    flex-direction: row;
+    background-image: url('../../frontend/img/house-bg1.jpg');
+    background-color: rgb(243, 243, 243);
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+.titleContainer {
+    height: 80%;
+    width: 150%;
+}
+
+.pageTitle {
+    margin-top: 50px;
+    margin-left: 90px;
+    font-weight: 600;
+    letter-spacing: .3px;
+    color: rgb(255, 255, 255);
+    font-size: 4em;
+}
+
+#greating {
+    margin-left: 95px;
+    color: white;
+    font-size: 2em;
+    font-weight: 600;
+}
+
+#logOutButtonWrapper {
+    width: 20%;
+    margin: 2em;
+}
+
+#logOutButton {
+    height: 3em;
+}
+
+.btn {
+    padding: 9px 15px;
+    font-weight: bold;
+    color: #00ab9ff5;
+    background-color: rgba(255, 255, 255, 0.72);
+    border-radius: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.45);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    box-shadow: 0 18px 45px rgba(0, 0, 0, 0.25),
+        inset 0 1px 0 rgba(255, 255, 255, 0.65),
+        inset 0 -1px 0 rgba(255, 255, 255, 0.18);
+    transition: transform .2s ease, box-shadow .3s ease, border-color .3s ease;
+}
+
+.btn:hover {
+    border: solid 1px #ffffff;
+    position: relative;
+    font-weight: bold;
+    color: #007971f5;
+    background-color: rgba(255, 255, 255, 0.619);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    box-shadow: 0 18px 45px rgba(80, 80, 80, 0.25),
+        inset 0 1px 0 rgba(195, 195, 195, 0.65),
+        inset 0 -1px 0 rgba(255, 255, 255, 0.531);
+    transition: transform .1s ease, box-shadow .3s ease, border-color .3s ease;
+}
+
+#btnWrapperContainer {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: baseline;
+    height: 20em;
+}
+
+.largeBtn {
+    margin: 1em;
+    padding: 26px 15px;
+    width: 18em;
+    height: 5em;
+    font-weight: bold;
+    font-size: 2em;
+    color: #00ab9ff5;
+    background-color: rgba(255, 255, 255, 0.22);
+    border-radius: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.45);
+    align-content: center;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    box-shadow: 0 18px 45px rgba(0, 0, 0, 0.25),
+        inset 0 1px 0 rgba(255, 255, 255, 0.65),
+        inset 0 -1px 0 rgba(255, 255, 255, 0.18);
+    transition: transform .2s ease, box-shadow .3s ease, border-color .3s ease;
+}
+
+.largeBtn:hover {
+    font-weight: bold;
+    color: #007971f5;
+    background-color: rgba(255, 255, 255, 0.619);
+    border-radius: 16px;
+    border: 1px solid rgba(0, 255, 183, 0.45);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    box-shadow: 0 18px 45px rgba(80, 80, 80, 0.25),
+        inset 0 1px 0 rgba(195, 195, 195, 0.65),
+        inset 0 -1px 0 rgba(255, 255, 255, 0.531);
+    transition: transform .1s ease, box-shadow .3s ease, border-color .3s ease;
+}

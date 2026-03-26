@@ -1,3 +1,29 @@
+@font-face {
+  font-family: "Sedan";
+  src: url("../../frontend/fonts/Sedan/Sedan-Regular.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Google-Sans";
+  src: url("../../frontend/fonts/Google_Sans/static/GoogleSans-Regular.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+:root {
+  --glass-bg: rgba(255, 255, 255, .22);
+  --glass-bg-strong: rgba(255, 255, 255, .58);
+  --glass-border: rgba(255, 255, 255, .45);
+  --glass-shadow: 0 18px 45px rgba(0, 0, 0, .20),
+    inset 0 1px 0 rgba(255, 255, 255, .65),
+    inset 0 -1px 0 rgba(255, 255, 255, .18);
+  --glass-blur: blur(12px);
+}
+
 * {
   box-sizing: border-box;
   margin: 0;
@@ -10,16 +36,20 @@ html {
 
 body {
   font-size: 1.6rem;
-  font-family: "Roboto Slab", serif;
+  font-family: "Google-Sans", "Sedan", sans-serif;
   font-optical-sizing: auto;
   font-weight: 400;
   font-style: normal;
 }
 
-.box-left {
-  border: 1px solid #ccc;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  background-color: #ffffff;
+.box-left,
+.box-right {
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  box-shadow: var(--glass-shadow);
+  border-radius: 16px;
 }
 
 .box-left::-webkit-scrollbar {
@@ -34,25 +64,29 @@ body {
   -ms-overflow-style: none;
 }
 
-.box-right {
-  background-color: #f7f7f7;
-}
-
 .property {
-  background: #fff;
-  color: #222;
-  box-shadow: 0 8px 20px rgba(0, 0, 0, .05);
-  transition: box-shadow .2s ease;
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  box-shadow: var(--glass-shadow);
+  border-radius: 16px;
+  overflow: hidden;
+  color: #1f2a37;
 }
 
 .property:hover {
-  box-shadow: 0 16px 32px rgba(0, 0, 0, .12);
+  box-shadow: 0 22px 55px rgba(0, 0, 0, .25),
+    inset 0 1px 0 rgba(255, 255, 255, .65),
+    inset 0 -1px 0 rgba(255, 255, 255, .18);
 }
+
 
 .picture {
   background: #89afd8 center/cover no-repeat;
   transition: transform .4s ease-in-out;
 }
+
 
 .propertyTextContainer {
   background: #fff;
@@ -75,24 +109,68 @@ body {
 }
 
 .pagination-controls button.btn {
-  border: none;
-  border-radius: 5px;
-  background-color: #bfd7ee;
-  color: #000;
-  font-family: "Montserrat", sans-serif;
+  background: rgba(255, 255, 255, 0.22);
+  color: #0f6e67;
+
   font-size: 16px;
-  font-weight: 300;
+  font-weight: 500;
   text-align: center;
   cursor: pointer;
+
+  border: 1px solid rgba(255, 255, 255, 0.45);
+  border-radius: 14px;
+
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+
+  box-shadow:
+    0 18px 45px rgba(0, 0, 0, 0.20),
+    inset 0 1px 0 rgba(255, 255, 255, 0.65),
+    inset 0 -1px 0 rgba(255, 255, 255, 0.18);
+
+  transition: transform .15s ease, box-shadow .3s ease, background-color .3s ease, border-color .3s ease, color .3s ease;
+}
+
+.paginationControls .btn:hover {
+  background: rgba(255, 255, 255, 0.62);
+  border-color: rgba(0, 255, 183, 0.45);
+  color: #007971f5;
+  transform: translateY(-1px);
+}
+
+.paginationControls .btn.active,
+.paginationControls .btn:active {
+  background: rgba(255, 255, 255, 0.72);
+  transform: translateY(0);
 }
 
 .pagination-controls .ellipsis {
-  color: #000;
+  color: #0f6e67;
   font-size: 16px;
-  font-weight: 300;
+  font-weight: 400;
+  padding: 0 8px;
 }
 
 .btn.btn-primary {
-  background-color: #007bff;
-  color: #fff;
+  background: rgba(255, 255, 255, 0.22) !important;
+  color: #0f6e67 !important;
+  border: 1px solid rgba(255, 255, 255, 0.45) !important;
+
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+
+  box-shadow:
+    0 18px 45px rgba(0, 0, 0, 0.20),
+    inset 0 1px 0 rgba(255, 255, 255, 0.65),
+    inset 0 -1px 0 rgba(255, 255, 255, 0.18);
+}
+
+.btn-primary:hover {
+  background: rgba(255, 255, 255, 0.62) !important;
+  color: #007971f5 !important;
+  border-color: rgba(0, 255, 183, 0.45) !important;
+}
+
+#paginationControls {
+  padding: 1em 2em;
 }

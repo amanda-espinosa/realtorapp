@@ -73,7 +73,7 @@ function init() {
             }
         }
 
-        $.post("../../backend/php/increment_views.php", {
+        $.post("../../backend/php/main.php?action=incrementViews", {
             id: house.id
         }).then(response => {
             console.log("View count incremented:", response);
@@ -86,10 +86,12 @@ function init() {
         document.getElementById("property_state").innerText = stateText;
     }
 
+    setTimeout(async () => {
+        let map = await realtorapp.map.initPropertyMap(house);
 
-    setTimeout(() => {
-        let map = realtorapp.map.initPropertyMap(house);
-        map.invalidateSize();
+        setTimeout(() => {
+            map.invalidateSize();
+        }, 200);
     }, 200);
 }
 

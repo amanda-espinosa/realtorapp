@@ -1,7 +1,7 @@
 const api = {
-    previewContentUrl: "../../backend/php/list_properties.php",
+    previewContentUrl: "../../backend/php/main.php?action=getPropertyList",
     numberOfHouses: 8,
-    openCageKeyUrl: "../../backend/php/get_open_cage_key.php",
+    openCageKeyUrl: "../../backend/php/main.php?action=getOpenCageKey",
 
     getPreviewContent: function (currentPage) {
         let numberOfHouses = this.numberOfHouses;
@@ -14,7 +14,7 @@ const api = {
         });
     },
 
-    getOpenCageLeafletKey: function () {
+    getOpenCageLeafletKey: async function () {
         return $.ajax({
             url: this.openCageKeyUrl,
             method: "GET",

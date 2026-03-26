@@ -1,15 +1,40 @@
+@font-face {
+  font-family: "Sedan";
+  src: url("../../frontend/fonts/Sedan/Sedan-Regular.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Google-Sans";
+  src: url("../../frontend/fonts/Google_Sans/static/GoogleSans-Regular.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+:root {
+  --glass-bg: rgba(255, 255, 255, .22);
+  --glass-bg-strong: rgba(255, 255, 255, .58);
+  --glass-border: rgba(255, 255, 255, .45);
+  --glass-shadow: 0 18px 45px rgba(0, 0, 0, .20),
+    inset 0 1px 0 rgba(255, 255, 255, .65),
+    inset 0 -1px 0 rgba(255, 255, 255, .18);
+  --glass-blur: blur(12px);
+  --accent: #007971f5;
+}
+
 * {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
-  font-family: "Roboto", serif;
-  font-optical-sizing: auto;
+  font-family: "Google-Sans", "Sedan", sans-serif;
   font-weight: 400;
   font-style: normal;
 }
 
-html,
-body {
+html {
   scroll-behavior: smooth;
 }
 
@@ -18,25 +43,27 @@ nav {
 }
 
 #back-button {
-  background-color: #003983;
-  color: rgb(255, 255, 255);
-  border: none;
-  border-radius: 0;
-  font-weight: 600;
-  cursor: pointer;
-  font-size: 16px;
+  background: var(--glass-bg);
+  color: #0c868c;
+  border: 1px solid var(--glass-border);
+  border-radius: 16px;
+  padding: 8px 16px;
   text-decoration: none;
-  transition: background-color 0.3s, color 0.3s;
+  font-weight: 45em;
+  cursor: pointer;
+
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  box-shadow: var(--glass-shadow);
+
+  transition: transform .15s ease, box-shadow .3s ease, background-color .3s ease, border-color .3s ease, color .3s ease;
 }
 
 #back-button:hover {
-  background-color: transparent;
-  color: #002F6C;
-  border: 1px solid #003983;
-  font-weight: 600;
-  cursor: pointer;
-  font-size: 16px;
-  text-decoration: none;
+  background: rgba(255, 255, 255, .62);
+  color: var(--accent);
+  border-color: rgba(153, 167, 163, 0.4);
+  transform: translateY(-1px);
 }
 
 #mainPhoto img {
@@ -45,7 +72,8 @@ nav {
 
 .homePics,
 .homePicsMore {
-  border-radius: 0;
+  border-radius: 12px;
+  overflow: hidden;
 }
 
 #galleryRight {
@@ -62,21 +90,32 @@ nav {
 }
 
 .homePicsMore .overlay {
-  background-color: rgba(0, 0, 0, 0.6);
-  color: white;
-  font-size: 24px;
-  font-weight: bold;
-  border-radius: 0;
+  background: rgba(0, 0, 0, .45);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  color: #fff;
+  border-radius: 12px;
 }
 
 #info {
   display: flex;
   flex-direction: column;
+  padding: 2em;
+}
+
+#mapAndForm {
+  height: 50em;
 }
 
 #property {
   width: 85%;
-  background: rgb(255, 255, 255);
+  background: var(--glass-bg);
+  border-radius: 0;
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  overflow: hidden;
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--glass-shadow);
 }
 
 #price {
@@ -105,32 +144,60 @@ nav {
 }
 
 #formSubmitButton {
-  background-color: #003983;
-  color: white;
   padding: 8px 16px;
   margin: 0 5px;
-  border: none;
-  border-radius: 0;
-  font-family: "Roboto", serif;
-  font-optical-sizing: auto;
+  border-radius: 16px;
+
+  background: rgba(255, 255, 255, 0.22);
+  color: #003e3af5;
+
+  border: 1px solid rgba(255, 255, 255, 0.45);
+
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+
+  box-shadow:
+    0 18px 45px rgba(0, 0, 0, 0.20),
+    inset 0 1px 0 rgba(255, 255, 255, 0.65),
+    inset 0 -1px 0 rgba(255, 255, 255, 0.18);
+
+  font-family: "Google-Sans", "Sedan", sans-serif;
   font-weight: 600;
   font-style: normal;
   cursor: pointer;
   font-size: 16px;
   text-decoration: none;
-  transition: background-color 0.3s, color 0.3s;
+
+  transition: transform .15s ease, box-shadow .3s ease, border-color .3s ease, background-color .3s ease, color .3s ease;
 }
 
 #formSubmitButton:hover {
-  color: #002F6C;
-  background-color: transparent;
-  border: 1px solid #003983;
-  font-weight: 600;
-  cursor: pointer;
-  font-size: 16px;
-  text-decoration: none;
+  background: rgba(255, 255, 255, 0.62);
+  color: #007971f5;
+  border-color: rgba(0, 255, 183, 0.45);
+  transform: translateY(-1px);
+
+  box-shadow:
+    0 18px 45px rgba(80, 80, 80, 0.20),
+    inset 0 1px 0 rgba(195, 195, 195, 0.65),
+    inset 0 -1px 0 rgba(255, 255, 255, 0.53);
+}
+
+#formSubmitButton:active {
+  transform: translateY(0);
 }
 
 .field-row label {
   font-weight: 600;
+  line-height: 2;
+}
+
+#features {
+  background: rgba(255, 255, 255, .18);
+  border: 1px solid var(--glass-border);
+  border-radius: 14px;
+  margin: 0;
+
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
 }

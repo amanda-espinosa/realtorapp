@@ -107,3 +107,7 @@
     display: grid;
     place-items: center;
 }
+
+#paginationControls {
+    padding: 1em 2em;
+}

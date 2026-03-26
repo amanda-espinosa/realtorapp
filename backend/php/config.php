@@ -1,4 +1,4 @@
 <?php
 // Absolute path to the json settings file.
-$settingsPath = "/var/www/";
+$settingsPath = "/var/www/RealtorAppSettings.json";
 ?>

@@ -1,0 +1,196 @@
+@font-face {
+    font-family: "Sedan";
+    src: url("../../frontend/fonts/Sedan/Sedan-Regular.ttf") format("truetype");
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: "Google-Sans";
+    src: url("../../frontend/fonts/Google_Sans/static/GoogleSans-Regular.ttf") format("truetype");
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+}
+
+:root {
+    --glass-bg: rgba(255, 255, 255, .22);
+    --glass-bg-strong: rgba(255, 255, 255, .58);
+    --glass-border: rgba(255, 255, 255, .45);
+    --glass-shadow: 0 18px 45px rgba(0, 0, 0, .20),
+        inset 0 1px 0 rgba(255, 255, 255, .65),
+        inset 0 -1px 0 rgba(255, 255, 255, .18);
+    --glass-blur: blur(12px);
+    --accent: #007971f5;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: "Google-Sans", "Sedan", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 400;
+    font-style: normal;
+}
+
+html,
+body {
+    scroll-behavior: smooth;
+    background: #f5f7fb;
+}
+
+nav {
+    background: transparent;
+}
+
+#back-button,
+#save {
+    background: var(--glass-bg);
+    color: #0c868c;
+    border: 1px solid var(--glass-border);
+    border-radius: 16px;
+    padding: 8px 16px;
+    text-decoration: none;
+    font-weight: 600;
+    cursor: pointer;
+
+    backdrop-filter: var(--glass-blur);
+    -webkit-backdrop-filter: var(--glass-blur);
+    box-shadow: var(--glass-shadow);
+
+    transition: transform .15s ease, box-shadow .3s ease, background-color .3s ease, border-color .3s ease, color .3s ease;
+}
+
+#back-button:hover,
+#save:hover {
+    background: rgba(255, 255, 255, .62);
+    color: var(--accent);
+    border-color: rgba(153, 167, 163, 0.151);
+    transform: translateY(-1px);
+}
+
+#mainPhoto img,
+.homePics,
+.homePicsMore,
+.homePics img,
+.homePicsMore img {
+    border-radius: 12px;
+}
+
+.image-text {
+    color: #0f6e67;
+}
+
+.homePics,
+.homePicsMore {
+    border-radius: 6px;
+}
+
+.homePicsMore .overlay {
+    background: rgba(0, 0, 0, .45);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    color: #fff;
+    border-radius: 12px;
+}
+
+#property {
+    background: var(--glass-bg);
+    border-radius: 0;
+    backdrop-filter: var(--glass-blur);
+    -webkit-backdrop-filter: var(--glass-blur);
+    overflow: hidden;
+}
+
+#price {
+    font-size: 2.5em;
+}
+
+#property_state {
+    font-size: 2em;
+}
+
+.image-text {
+    font-size: 2.5em;
+    font-weight: 400;
+    color: #2f404f;
+}
+
+#features {
+    background: rgba(255, 255, 255, .18);
+    border: 1px solid var(--glass-border);
+    border-radius: 14px;
+    margin: 0;
+
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+}
+
+.field-row label {
+    font-weight: 600;
+    line-height: 2;
+}
+
+.editable {
+    position: relative;
+    padding-right: 3em;
+    min-height: 2.25rem;
+    line-height: 2;
+    word-wrap: anywhere;
+}
+
+.inputValue:invalid {
+    border: 2px solid red;
+}
+
+.inputValue:valid {
+    border: none;
+}
+
+#info {
+    border: none;
+    border-radius: 0;
+}
+
+input,
+select,
+textarea {
+    width: 100%;
+    padding: 5px 7px;
+
+    background: rgba(255, 255, 255, 0.16);
+    color: #273648;
+
+    border: 1px solid rgba(255, 255, 255, 0.45);
+    border-radius: 12px;
+
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+}
+
+input::placeholder,
+textarea::placeholder {
+    color: rgba(31, 42, 55, 0.55);
+}
+
+/* Focus glow */
+input:focus,
+select:focus,
+textarea:focus {
+    background: rgba(255, 255, 255, 0.32);
+    border-color: rgba(0, 255, 183, 0.45);
+    box-shadow:
+        0 0 0 4px rgba(0, 171, 159, 0.18),
+        0 10px 25px rgba(0, 0, 0, .08),
+        inset 0 1px 0 rgba(255, 255, 255, .55);
+}
+
+/* Disabled */
+input:disabled,
+select:disabled,
+textarea:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
