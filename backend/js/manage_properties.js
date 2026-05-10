@@ -150,7 +150,7 @@ function createPreviewContent(housesArray) {
         buttonsContainer.appendChild(editButton);
 
         let deleteButton = document.createElement("button");
-        deleteButton.classList.add("deleteButton", "bi", "bi-trash", "realtor-btn");
+        deleteButton.classList.add("deleteButton", "bi", "bi-trash", "btn-primary");
         buttonsContainer.appendChild(deleteButton);
 
         deleteButton.addEventListener("click", e => {
@@ -342,34 +342,34 @@ $(document).ready(async function () {
         e.preventDefault();
         let house = {
             id: "",
-            price: "",
-            number_of_rooms: "",
-            number_of_bathrooms: "",
-            area_sqft: "",
-            property_state: "",
+            price: "0",
+            number_of_rooms: "0",
+            number_of_bathrooms: "0",
+            area_sqft: "0",
+            property_state: "0",
             address_street: "",
             address_apartment: "",
             address_city: "",
             address_state: "",
-            address_zip: "",
+            address_zip: "0",
             description: "",
             heating_type: "",
             cooling_type: "",
             appliances: "",
             flooring_type: "",
-            basement: "",
-            fireplace: "",
-            levels: "",
+            basement: "0",
+            fireplace: "0",
+            levels: "0",
             parcel_number: "",
             special_conditions: "",
-            size_lot: null,
-            price_per_squarefeet: null,
-            built_in_year: "",
+            size_lot: "0",
+            price_per_squarefeet: "0",
+            built_in_year: "0",
             home_type: "",
             materials: "",
             sewer_type: "",
             water_type: "",
-            hoa_cost: "",
+            hoa_cost: "0",
             enrollment_date: "2025-06-01",
             latitude: "",
             longitude: "",

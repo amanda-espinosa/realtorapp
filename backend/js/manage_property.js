@@ -6,7 +6,8 @@ const MySQLDataType = {
     DOUBLE: "double",
     INTEGER: "int",
     TINYINT: "tinyint",
-    MEDIUMINT: "mediumint"
+    MEDIUMINT: "mediumint",
+    YEAR: "year"
 };
 
 const HtmlTagName = {
@@ -23,11 +24,43 @@ const InputType = {
 };
 
 const ColumnName = {
-    PROPERTY_STATE: "property_state"
+    PRICE: "price",
+    NUMBER_OF_ROOMS: "number_of_rooms",
+    NUMBER_OF_BATHROOMS: "number_of_bathrooms",
+    AREA_SQFT: "area_sqft",
+    PROPERTY_STATE: "property_state",
+    ADDRESS_STREET: "address_street",
+    ADDRESS_APARTMENT: "address_apartment",
+    ADDRESS_CITY: "address_city",
+    ADDRESS_STATE: "address_state",
+    ADDRESS_ZIP: "address_zip",
+    DESCRIPTION: "description",
+    HEATING_TYPE: "heating_type",
+    COOLING_TYPE: "cooling_type",
+    APPLIANCES: "appliances",
+    FLOORING_TYPE: "flooring_type",
+    BASEMENT: "basement",
+    FIREPLACE: "fireplace",
+    LEVELS: "levels",
+    PARCEL_NUMBER: "parcel_number",
+    SPECIAL_CONDITIONS: "special_conditions",
+    SIZE_LOT: "size_lot",
+    PRICE_PER_SQUAREFEET: "price_per_squarefeet",
+    BUILT_IN_YEAR: "built_in_year",
+    HOME_TYPE: "home_type",
+    MATERIALS: "materials",
+    SEWER_TYPE: "sewer_type",
+    WATER_TYPE: "water_type",
+    HOA_COST: "hoa_cost",
+    LATITUDE: "latitude",
+    LONGITUDE: "longitude"
 };
 
 let house = null;
 let propertyDefinition = [];
+
+let pond = null;
+let originalImageSources = [];
 
 const stateTextArray = [
     "For Rent",
@@ -36,6 +69,74 @@ const stateTextArray = [
     "Sold",
     "Off Market"
 ];
+
+let gallery = document.getElementById("gallery");
+
+function SetNumberElementsById(id, value) {
+    let propertyElement = document.getElementById(id);
+    if (!isNaN(value)) {
+        propertyElement.value = value;
+        propertyElement.dataset.previous_content = value;
+    }
+
+    propertyElement.addEventListener('input', () => {
+        if (propertyElement.checkValidity()) {
+            propertyElement.style.border = '';
+            if (propertyElement.value !== propertyElement.dataset.previous_content) {
+                house[id] = propertyElement.value;
+                propertyElement.dataset.previous_content = value;
+            }
+            //console.log(house[id]);
+        }
+        else {
+            propertyElement.style.border = '2px solid red';
+            //console.log("input invaliiiiiiiiiiiiiiiiiiiid!");
+        }
+    });
+}
+
+function SetRadioElementsByName(name, value) {
+    let radios = document.querySelectorAll('input[name="' + name + '"]');
+    radios.forEach(radio => {
+        if (radio.id == "basementTrue" || radio.id == "fireplaceTrue") {
+            radio.checked = value == "1" ? true : false;
+        } else if (radio.id == "basementFalse" || radio.id == "fireplaceFalse") {
+            radio.checked = value == "0" ? true : false;
+        }
+
+        radio.addEventListener("change", function () {
+            house[property] = this.value;
+        });
+    });
+}
+
+function SetSelectElementsById(id, value) {
+    let propertyElement = document.getElementById(id);
+    propertyElement.value = value;
+    propertyElement.addEventListener("change", function () {
+        house[id] = this.value;
+    });
+}
+
+function SetTextElementsById(id, value) {
+    let propertyElement = document.getElementById(id);
+    propertyElement.value = value;
+    propertyElement.dataset.previous_content = value;
+
+    propertyElement.addEventListener('input', () => {
+        let text = propertyElement.value.trim();
+
+        if (propertyElement.checkValidity()) {
+            propertyElement.style.border = '';
+            if (text !== propertyElement.dataset.previous_content) {
+                house[id] = text;
+            }
+        } else {
+            propertyElement.style.border = '2px solid red';
+        }
+        //console.log(house[id]);
+    });
+}
 
 async function getOpenCageLeafletKey() {
     return $.ajax({
@@ -57,94 +158,162 @@ async function getPropertyDefinition() {
         if (result.success) {
             return result.definition;
         } else {
-            console.log("Fail to fetch propertyDefinition! Error: " + result.error);
+            showNotification(`Fail to fetch propertyDefinition! Error: ${result.error}`, "danger");
+            //console.log("Fail to fetch propertyDefinition! Error: " + result.error);
         }
 
     } catch (error) {
-        console.error(error.message);
+        showNotification(`${result.error}`, "danger");
+        //console.error(error.message);
         return [];
     }
+}
+
+//Bootstrap Notifications
+
+function hideMsg(id) {
+    let el = document.getElementById(id);
+    el.textContent = "";
+    el.classList.add("d-none");
+}
+
+function showNotification(message, type = "success") {
+    let el = document.getElementById("notification");
+
+    el.classList.remove(
+        "d-none", "alert-success", "alert-danger", "alert-warning", "alert-info", "alert-primary", "alert-secondary", "alert-light", "alert-dark"
+    );
+
+    el.classList.add("alert", `alert-${type}`);
+    el.textContent = message;
+
+    setTimeout(() => hideMsg("notification"), 3000);
+}
+
+function bootstrapConfirm(message, options = {}) {
+    const title = options.title ?? "Confirm";
+    const okText = options.okText ?? "OK";
+    const cancelText = options.cancelText ?? "Cancel";
+
+    const modalEl = document.getElementById("confirmModal");
+    const modal = bootstrap.Modal.getOrCreateInstance(modalEl);
+
+    document.getElementById("confirmTitle").textContent = title;
+    document.getElementById("confirmBody").textContent = message;
+
+    const okBtn = document.getElementById("confirmOk");
+    const cancelBtn = document.getElementById("confirmCancel");
+
+    okBtn.textContent = okText;
+    cancelBtn.textContent = cancelText;
+
+    return new Promise((resolve) => {
+        const cleanup = () => {
+            okBtn.removeEventListener("click", onOk);
+            modalEl.removeEventListener("hidden.bs.modal", onHidden);
+        };
+
+        const onOk = () => {
+            cleanup();
+            modal.hide();
+            resolve(true);
+        };
+
+        const onHidden = () => {
+            cleanup();
+            resolve(false);
+        };
+
+        okBtn.addEventListener("click", onOk, { once: true });
+        modalEl.addEventListener("hidden.bs.modal", onHidden, { once: true });
+
+        modal.show();
+    });
 }
 
 window.addEventListener("DOMContentLoaded", init);
 
 async function init() {
+    let editForm = document.getElementById("editForm");
     let saveButton = document.getElementById("save");
+
+    const requiredInputs = editForm.querySelectorAll("input[required]");
+    requiredInputs.forEach(input => {
+        input.addEventListener("input", updateSaveButton);
+    });
+
+    const requiredSelects = editForm.querySelectorAll("select[required]");
+    requiredSelects.forEach(select => {
+        select.addEventListener("change", updateSaveButton);
+    });
+
+    updateSaveButton();
+
     function getQueryParam(param) {
         let urlParams = new URLSearchParams(window.location.search);
         return urlParams.get(param);
     }
 
     propertyDefinition = await getPropertyDefinition();
-    console.log(propertyDefinition);
+    //console.log(propertyDefinition);
     let houseString = getQueryParam("house");
     try {
         houseString = decodeURIComponent(houseString);
-        console.log(houseString);
+        //console.log(houseString);
         house = JSON.parse(houseString);
+        //console.log(house);
     } catch (error) {
         console.error("Failed to parse house parameter:", error);
     }
 
-    if (house.id.length > 0) {
-        fetch(`../php/get_property_pictures.php?id=${house.id}`)
-            .then(response => response.json())
-            .then(images => {
+    saveButton.addEventListener("click", async e => {
+        e.stopPropagation();
 
-                if (images.length > 0) {
-                    const mainPhotoContainer = document.getElementById("mainPhotoContainer");
-                    const galleryRight = document.getElementById("galleryRight");
-                    mainPhotoContainer.innerHTML = "";
-                    galleryRight.innerHTML = "";
+        if (!house) {
+            showNotification("Invalid property data", "danger");
+            return;
+        }
 
-                    const mainPhoto = document.createElement("a");
-                    mainPhoto.id = "mainPhoto";
-                    mainPhoto.setAttribute("href", images[0]);
-                    mainPhoto.setAttribute("data-fancybox", "gallery");
-                    mainPhoto.setAttribute("data-caption", "Main House Image");
+        const url = (house.id.length == 0)
+            ? "../php/main.php?action=createProperty"
+            : "../php/main.php?action=editProperty";
 
-                    const mainImg = document.createElement("img");
-                    mainImg.src = images[0];
-                    mainImg.alt = "Main Image";
-                    mainPhoto.appendChild(mainImg);
-                    mainPhotoContainer.appendChild(mainPhoto);
+        const formData = new FormData();
 
-                    images.forEach((src, index) => {
-                        const anchor = document.createElement("a");
-                        anchor.setAttribute("href", src);
-                        anchor.setAttribute("data-fancybox", "gallery");
+        formData.append("property", JSON.stringify(house));
 
-                        const img = document.createElement("img");
-                        img.setAttribute("src", src);
-                        img.setAttribute("alt", "");
-                        anchor.appendChild(img);
+        pond.getFiles().forEach(fileItem => {
+            formData.append("images[]", fileItem.file, fileItem.filename);
+        });
 
-                        if (index < 4) {
-                            const rightPicsDiv = document.createElement("div");
-                            rightPicsDiv.className = index === 3 ? "homePicsMore" : "homePics";
-
-                            if (index === 3 && images.length > 4) {
-                                const overlay = document.createElement("div");
-                                overlay.className = "overlay";
-                                overlay.textContent = `+${images.length - 4}`;
-                                anchor.appendChild(overlay);
-                            }
-
-                            rightPicsDiv.appendChild(anchor);
-                            galleryRight.appendChild(rightPicsDiv);
-                        } else {
-                            anchor.style.display = "none";
-                            document.body.appendChild(anchor);
-                        }
-                    });
-                }
+        try {
+            const response = await fetch(url, {
+                method: "POST",
+                body: formData
             });
 
-    }
+            const resp = await response.json();
 
-    let editForm = document.getElementById("editForm");
+            if (resp.success) {
+                console.log(resp.message || resp.data);
+
+                if (resp.inserted_id) {
+                    house.id = resp.inserted_id;
+                }
+
+                showNotification("Property saved successfully!", "success");
+            } else {
+                showNotification(`Error saving property ${resp.error || resp.message}`, "danger");
+            }
+
+        } catch (error) {
+            console.error(error);
+            showNotification("Server error", "danger");
+        }
+    });
 
     if (house) {
+
         let propertiesHouseObject = Object.getOwnPropertyNames(house);
         let columnNames = Object.fromEntries(
             propertiesHouseObject.map(name => [name, name])
@@ -152,125 +321,111 @@ async function init() {
 
         for (let i = 0; i < propertiesHouseObject.length; i++) {
             let property = propertiesHouseObject[i];
-            console.log(property + " = " + house[property]);
-            console.log(propertyDefinition);
+            //console.log(property + " = " + house[property]);
+            //console.log(propertyDefinition);
             let value = house[property];
-            const definition = propertyDefinition.find(item => item.COLUMN_NAME === property);
-            console.log(definition);
+            let definition = propertyDefinition.find(item => item.COLUMN_NAME === property);
+            if (!definition) continue;
+            //console.log("Hello +++++++ " + definition);
 
-            let propertyElement = document.getElementById(property);
-            if (propertyElement !== null) {
-                if (propertyElement.dataset.previous_content === undefined) {
-                    propertyElement.dataset.previous_content = propertyElement.value || propertyElement.innerText || "";
-                }
+            switch (property) {
+                case ColumnName.PROPERTY_STATE:
+                    SetSelectElementsById(property, value);
+                    break;
+                case ColumnName.BASEMENT:
+                    SetRadioElementsByName(ColumnName.BASEMENT, value);
+                    break;
+                case ColumnName.FIREPLACE:
+                    SetRadioElementsByName(ColumnName.FIREPLACE, value);
+                    break;
+                case ColumnName.PRICE:
+                case ColumnName.NUMBER_OF_ROOMS:
+                case ColumnName.NUMBER_OF_BATHROOMS:
+                case ColumnName.AREA_SQFT:
+                case ColumnName.ADDRESS_ZIP:
+                case ColumnName.LEVELS:
+                case ColumnName.SIZE_LOT:
+                case ColumnName.PRICE_PER_SQUAREFEET:
+                case ColumnName.BUILT_IN_YEAR:
+                case ColumnName.HOA_COST:
+                    SetNumberElementsById(property, value);
+                    break;
+                case ColumnName.ADDRESS_STREET:
+                case ColumnName.ADDRESS_APARTMENT:
+                case ColumnName.ADDRESS_CITY:
+                case ColumnName.ADDRESS_STATE:
+                case ColumnName.DESCRIPTION:
+                case ColumnName.HEATING_TYPE:
+                case ColumnName.COOLING_TYPE:
+                case ColumnName.APPLIANCES:
+                case ColumnName.FLOORING_TYPE:
+                case ColumnName.PARCEL_NUMBER:
+                case ColumnName.SPECIAL_CONDITIONS:
+                case ColumnName.HOME_TYPE:
+                case ColumnName.MATERIALS:
+                case ColumnName.SEWER_TYPE:
+                case ColumnName.WATER_TYPE:
+                    SetTextElementsById(property, value);
+                    break;
+                default:
+                    console.log(`property name not found ${property}`);
 
-                if (propertyElement.tagName === HtmlTagName.INPUT ||
-                    propertyElement.tagName === HtmlTagName.SELECT ||
-                    propertyElement.tagName === HtmlTagName.TEXTAREA) {
-                    propertyElement.value = value;
-                } else {
-                    propertyElement.innerText = value;
-                }
-
-                if (property === ColumnName.PROPERTY_STATE) {
-                    propertyElement.value = value;
-                    propertyElement.dataset.previous_content = value;
-                    continue;
-                }
-
-                if (propertyElement.tagName === HtmlTagName.INPUT &&
-                    propertyElement.type === InputType.RADIO) {
-                    if (propertyElement.value == value) {
-                        propertyElement.checked = true;
-                    }
-                }
-
-                if (definition.DATA_TYPE === MySQLDataType.FLOAT ||
-                    definition.DATA_TYPE === MySQLDataType.DECIMAL ||
-                    definition.DATA_TYPE === MySQLDataType.DOUBLE ||
-                    definition.DATA_TYPE === MySQLDataType.INTEGER ||
-                    definition.DATA_TYPE === MySQLDataType.MEDIUMINT) {
-                    if (!isNaN(value)) {
-                        propertyElement.value = value;
-                        propertyElement.dataset.previous_content = value;
-                    }
-
-                    propertyElement.addEventListener('input', () => {
-                        if (propertyElement.checkValidity()) {
-                            if (propertyElement.value !== propertyElement.dataset.previous_content) {
-                                house[property] = propertyElement.value;
-                            }
-                            console.log(house[property]);
-                            console.log("form validity = " + editForm.checkValidity());
-                        }
-                        else {
-                            console.log("input invaliiiiiiiiiiiiiiiiiiiid!");
-                            console.log("form validity = " + editForm.checkValidity());
-                        }
-                        updateSaveButton();
-                    });
-
-                } else {
-                    propertyElement.dataset.previous_content = value;
-
-                    propertyElement.addEventListener('input', () => {
-                        const text = propertyElement.value.trim();
-
-                        if (propertyElement.checkValidity()) {
-                            propertyElement.style.border = '';
-                            console.log("TEXT => Is valid = " + propertyElement.checkValidity());
-
-                            if (text !== propertyElement.dataset.previous_content) {
-                                house[property] = text;
-                            }
-                        } else {
-                            console.log("TEXT => Is valid = " + propertyElement.checkValidity());
-                            propertyElement.style.border = '2px solid red';
-                        }
-                        console.log(house[property]);
-                        updateSaveButton();
-                    });
-                }
-
-                if (definition.DATA_TYPE === MySQLDataType.TINYINT) {
-                    let radios = document.querySelectorAll(`input[name="${property}"]`);
-                    radios.forEach(radio => {
-                        radio.checked = (radio.value == value);
-
-                        radio.addEventListener('change', () => {
-                            house[property] = Number(radio.value);
-                            updateSaveButton();
-                        });
-                    });
-                    continue;
-                }
             }
         }
-        updateSaveButton();
-    }
 
-    console.log(saveButton);
-    saveButton.addEventListener("click", e => {
-        console.log("Click");
-        e.stopPropagation();
-        $.post(
-            "../php/main.php?action=editProperty",
-            { property: JSON.stringify(house) }
-        ).done(resp => {
-            let response = JSON.parse(resp);
-            if (response.success) {
-                console.log(response.message || response.data);
-                alert("Property updated successfully!");
-            } else {
-                alert("failed: " + response.error);
+        FilePond.registerPlugin(
+            FilePondPluginImagePreview,
+            FilePondPluginFileValidateSize
+        );
+
+        pond = FilePond.create(document.querySelector('.filepond'), {
+            instantUpload: false,
+            allowMultiple: true,
+
+            maxFiles: 50,
+            maxTotalFileSize: "100MB",
+
+            labelMaxTotalFileSizeExceeded: "The total size of all images cannot exceed 100 MB",
+            labelMaxTotalFileSize: "Maximum total size is {filesize}",
+            labelMaxFileSizeExceeded: "This image is too large",
+
+            server: {
+                load: (source, load, error) => {
+                    fetch(source)
+                        .then(res => {
+                            if (!res.ok) throw new Error("Image not found");
+                            return res.blob();
+                        })
+                        .then(load)
+                        .catch(error);
+                }
             }
-        }).fail(() => alert("Server error"));
+        });
 
-        //TODO 
-        /*Improve failure pop up warning (bootstrap)
-        disable save button if needed
-        */
-    });
+        pond.on("addfile", updateSaveButton);
+        pond.on("removefile", updateSaveButton);
+        pond.on("reorderfiles", updateSaveButton);
+
+        if (house.id && house.id.length > 0) {
+            fetch(`../../backend/php/main.php?action=getPropertyImages&id=${house.id}`)
+                .then(res => res.json())
+                .then(images => {
+                    originalImageSources = images.map(src => String(src));
+
+                    pond.addFiles(
+                        images.map(src => ({
+                            source: src,
+                            options: {
+                                type: 'local'
+                            }
+                        }))
+                    );
+
+                    updateSaveButton();
+                });
+        }
+
+    }
 
     let map;
 
@@ -323,10 +478,12 @@ async function init() {
                     latitude: gLat,
                     longitude: gLng
                 });
-                console.log("Coordinates saved for house ID:", house.id);
+                showNotification(`Coordinates saved for house ID: ${house.id}`, "success");
+                //console.log("Coordinates saved for house ID:", house.id);
 
             } catch (err) {
-                console.error('Geocoding error:', err);
+                //console.error('Geocoding error:', err);
+                showNotification(`Geocoding error: ${err}`, "danger");
                 map.setView([27.75, -80.47], 10);
             }
         }
@@ -342,10 +499,29 @@ async function init() {
     }, 200);
 }
 
+function normalizeImages(images) {
+    return images
+        .map(item => String(item))
+        .sort();
+}
+
+function haveImagesChanged() {
+    if (!pond) return false;
+
+    const currentImageSources = pond.getFiles().map(fileItem => {
+        return String(fileItem.source || fileItem.filename);
+    });
+
+    const original = normalizeImages(originalImageSources);
+    const current = normalizeImages(currentImageSources);
+
+    return JSON.stringify(original) !== JSON.stringify(current);
+}
+
 function updateSaveButton() {
-    let editForm = document.getElementById("editForm");
-    //$("#save").prop("disabled", !$("#editForm")[0].checkValidity());
-    if (editForm.checkValidity()) {
+    const editForm = document.getElementById("editForm");
+
+    if (editForm.checkValidity() && haveImagesChanged()) {
         $("#save").removeAttr("disabled");
     } else {
         $("#save").attr("disabled", "disabled");

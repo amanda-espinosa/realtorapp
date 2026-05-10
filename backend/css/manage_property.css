@@ -71,29 +71,31 @@ nav {
     transform: translateY(-1px);
 }
 
-#mainPhoto img,
-.homePics,
-.homePicsMore,
-.homePics img,
-.homePicsMore img {
-    border-radius: 12px;
-}
-
-.image-text {
-    color: #0f6e67;
-}
-
-.homePics,
-.homePicsMore {
-    border-radius: 6px;
-}
-
-.homePicsMore .overlay {
-    background: rgba(0, 0, 0, .45);
+#save:disabled {
+    background: rgba(255, 255, 255, 0.15);
+    color: rgb(40, 57, 79);
+    border: 1px solid rgba(0, 0, 0, 0.74);
+    box-shadow: none;
     backdrop-filter: blur(6px);
-    -webkit-backdrop-filter: blur(6px);
-    color: #fff;
-    border-radius: 12px;
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+#save:disabled:hover {
+    background: rgba(255, 255, 255, 0.15);
+    color: rgb(40, 57, 79);
+    border: 1px solid rgba(0, 0, 0, 0.74);
+
+    box-shadow: none;
+    backdrop-filter: blur(6px);
+
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+#gallery {
+    height: 50px;
+    overflow-y: scroll;
 }
 
 #property {
@@ -193,4 +195,81 @@ select:disabled,
 textarea:disabled {
     opacity: 0.6;
     cursor: not-allowed;
+}
+
+.btn-primary {
+    height: fit-content;
+    align-items: center;
+    background: var(--glass-bg);
+    color: #0c868c;
+    border: 1px solid var(--glass-border);
+    border-radius: 16px;
+    padding: 8px 16px;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 3em;
+    cursor: pointer;
+
+    backdrop-filter: var(--glass-blur);
+    -webkit-backdrop-filter: var(--glass-blur);
+    box-shadow: var(--glass-shadow);
+
+    transition: transform .15s ease, box-shadow .3s ease, background-color .3s ease, border-color .3s ease, color .3s ease;
+}
+
+.btn-primary:hover {
+    background: rgba(255, 255, 255, 0.62) !important;
+    color: #007971f5 !important;
+    border-color: rgba(0, 255, 183, 0.45) !important;
+}
+
+.highlight {
+    color: rgb(185, 0, 0);
+    font-size: 1.5em;
+}
+
+#notification-wrapper {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    pointer-events: none;
+}
+
+#notification {
+    pointer-events: auto;
+}
+
+.filepond--root {
+    display: grid;
+    min-height: 40em;
+    width: 95%;
+    margin: 0 auto;
+}
+
+.filepond--list {
+    display: flex !important;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    gap: 1.7em;
+}
+
+.filepond--item {
+    flex: 0 0 180px !important;
+    max-width: 180px;
+}
+
+.filepond--image-preview {
+    height: 110px;
+    border-radius: 6px;
+    overflow: hidden;
+    overflow: scroll;
+}
+
+.filepond--panel-root {
+    width: 100% !important;
 }

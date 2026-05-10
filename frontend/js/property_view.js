@@ -7,7 +7,7 @@ function init() {
     let houseString = getQueryParam("house");
     let house = JSON.parse(houseString);
 
-    fetch(`../../backend/php/get_property_pictures.php?id=${house.id}`)
+    fetch(`../../backend/php/main.php?action=getPropertyImages&id=${house.id}`)
         .then(response => response.json())
         .then(images => {
 

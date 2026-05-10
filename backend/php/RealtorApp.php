@@ -64,6 +64,177 @@ class RealtorApp {
         rmdir($directory);
     }
 
+    public function createProperty($propertyJson, $images) {
+
+        if (!isset($_POST['property'])) {
+            return ["success" => false, "error" => "Missing property data"];
+        }
+        
+        $property = json_decode($propertyJson, true);
+        if ($property === null) {
+            return ["success" => false, "error" => "Invalid JSON"];
+        }
+
+        $MySQLNumericTypes = ["float", "decimal", "double", "int", "tinyint", "smallint", "mediumint", "bigint"];
+
+        $this->connectDatabase();
+
+        $propertyDefinition = [];
+        $database = $this->settings['database'];
+
+        $result = mysqli_query($this->connection, "
+            SELECT COLUMN_NAME, DATA_TYPE, CHARACTER_MAXIMUM_LENGTH, NUMERIC_PRECISION, NUMERIC_SCALE
+            FROM INFORMATION_SCHEMA.COLUMNS
+            WHERE TABLE_SCHEMA = '$database'
+            AND TABLE_NAME = 'properties_list'
+        ") or die(json_encode(["error" => mysqli_error($this->connection)]));
+
+        while ($dataArray = mysqli_fetch_array($result)) {
+            $propertyDefinition[] = [
+                "COLUMN_NAME" => $dataArray['COLUMN_NAME'],
+                "DATA_TYPE" => $dataArray['DATA_TYPE'],
+                "CHARACTER_MAXIMUM_LENGTH" => $dataArray['CHARACTER_MAXIMUM_LENGTH'],
+                "NUMERIC_PRECISION" => $dataArray['NUMERIC_PRECISION'],
+                "NUMERIC_SCALE" => $dataArray['NUMERIC_SCALE']
+            ];
+        }
+
+        unset($property['id']);
+
+        $columns = [];
+        $values = [];
+
+        foreach ($property as $column => $value) {
+
+            $definitionSearch = array_filter($propertyDefinition, function ($item) use ($column) {
+                return $item['COLUMN_NAME'] === $column;
+            });
+
+            if (!empty($definitionSearch)) {
+                $definition = array_values($definitionSearch)[0];
+                $type = $definition['DATA_TYPE'];
+
+                if (in_array($type, $MySQLNumericTypes)) {
+                   if ($value === "" || $value === null) {
+                    $columns[] = $column;
+                    $values[] = "NULL";
+                } elseif (is_numeric($value)) {
+                    $columns[] = $column;
+                    $values[] = $value;
+                } else {
+                    continue;
+                }
+                } 
+                else {
+                    if ($value === null || $value === "") {
+                        $columns[] = $column;
+                        $values[] = "NULL";
+                    } else {
+                        $escapedValue = mysqli_real_escape_string($this->connection, $value);
+                        $columns[] = $column;
+                        $values[] = "'$escapedValue'";
+                    }
+                }
+            }
+        }
+
+        if (empty($columns)) {
+            return ["success" => false, "error" => "No data to insert"];
+        }
+
+        $columnsClause = implode(", ", $columns);
+        $valuesClause = implode(", ", $values);
+
+        $sql = "INSERT INTO properties_list ($columnsClause) VALUES ($valuesClause)";
+
+        if (mysqli_query($this->connection, $sql)) {
+
+            $insertId = mysqli_insert_id($this->connection);
+
+            $imagesFolder = __DIR__ . "/../img/$insertId/";
+            $thumbnailFolder = __DIR__ . "/../houseThumbnail/$insertId/";
+            
+            $maxImages = 50;
+            $maxTotalSize = 100 * 1024 * 1024; // 100 MB
+
+            $totalImages = isset($images['name']) ? count($images['name']) : 0;
+
+            if ($totalImages > $maxImages) {
+                return [
+                    "success" => false,
+                    "error" => "You can upload a maximum of 50 images"
+                ];
+            }
+
+            $totalSize = 0;
+
+            foreach ($images['size'] as $size) {
+                $totalSize += $size;
+            }
+
+            if ($totalSize > $maxTotalSize) {
+                return [
+                    "success" => false,
+                    "error" => "The total size of all images cannot exceed 100 MB"
+                ];
+            }
+
+            if (!is_dir($imagesFolder)) {
+                mkdir($imagesFolder, 0777, true);
+            }
+
+            if ($totalImages > 0) {
+
+                foreach ($images['tmp_name'] as $index => $tmpName) {
+
+                    if ($images['error'][$index] !== UPLOAD_ERR_OK) {
+                        continue;
+                    }
+
+                    $originalName = $images['name'][$index];
+                    $extension = strtolower(pathinfo($originalName, PATHINFO_EXTENSION));
+
+                    $allowed = ['jpg', 'jpeg', 'png', 'webp'];
+
+                    if (!in_array($extension, $allowed)) {
+                        continue;
+                    }
+
+                    $newName = uniqid("property_", true) . "." . $extension;
+                    $destination = $imagesFolder . $newName;
+
+                    move_uploaded_file($tmpName, $destination);
+
+                    if ($index === 0) {
+                        if (!is_dir($thumbnailFolder)) {
+                            mkdir($thumbnailFolder, 0777, true);
+                        }
+
+                        copy($destination, $thumbnailFolder . "thumbnail.jpg");
+                    }
+                }
+            }
+
+            $this->connection->close();
+
+            return [
+                "success" => true,
+                "message" => "Property inserted successfully",
+                "inserted_id" => $insertId
+            ];
+
+        } else {
+
+            $error = mysqli_error($this->connection);
+            $this->connection->close();
+
+            return [
+                "success" => false,
+                "error" => $error
+            ];
+        }
+    }
+
     public function createUser($email, $username, $password, $role) {
         try {
             $pdo  = $this->getPdoInstance();
@@ -156,7 +327,7 @@ class RealtorApp {
         }
     }
 
-    public function editProperty($propertyJson) {
+    public function editProperty($propertyJson, $images) {
         $MySQLDataType = ["float", "decimal", "double"];
         $this->connectDatabase();
 
@@ -191,7 +362,7 @@ class RealtorApp {
                 "NUMERIC_SCALE" => $dataArray['NUMERIC_SCALE']
             ];
         }
-
+        
         $id = (int)$property['id'];
         unset($property['id']); 
 
@@ -220,6 +391,78 @@ class RealtorApp {
 
         if (mysqli_query($this->connection, $sql)) {
             $this->connection->close();
+
+            $imagesFolder = __DIR__ . "/../img/$id/";
+            $thumbnailFolder = __DIR__ . "/../houseThumbnail/$id/";
+
+            $maxImages = 50;
+            $maxTotalSize = 100 * 1024 * 1024; // 100 MB
+
+            $totalImages = isset($images['name']) ? count($images['name']) : 0;
+
+            if ($totalImages > $maxImages) {
+                return [
+                    "success" => false,
+                    "error" => "You can upload a maximum of 50 images"
+                ];
+            }
+
+            $totalSize = 0;
+
+            foreach ($images['size'] as $size) {
+                $totalSize += $size;
+            }
+
+            if ($totalSize > $maxTotalSize) {
+                return [
+                    "success" => false,
+                    "error" => "The total size of all images cannot exceed 100 MB"
+                ];
+            }
+
+            // Remove old images ONLY after validation passes
+            $oldImages = glob($imagesFolder . "*");
+            foreach ($oldImages as $file) {
+                if (is_file($file)) {
+                    unlink($file);
+                }
+            }
+
+            $oldThumbnail = glob($thumbnailFolder . "*");
+            foreach ($oldThumbnail as $file) {
+                if (is_file($file)) {
+                    unlink($file);
+                }
+            }
+
+            if ($totalImages > 0) {
+
+                foreach ($images['tmp_name'] as $index => $tmpName) {
+
+                    if ($images['error'][$index] !== UPLOAD_ERR_OK) {
+                        continue;
+                    }
+
+                    $originalName = $images['name'][$index];
+                    $extension = strtolower(pathinfo($originalName, PATHINFO_EXTENSION));
+
+                    $allowed = ['jpg', 'jpeg', 'png', 'webp'];
+
+                    if (!in_array($extension, $allowed)) {
+                        continue;
+                    }
+
+                    $newName = uniqid("property_", true) . "." . $extension;
+                    $destination = $imagesFolder . $newName;
+
+                    move_uploaded_file($tmpName, $destination);
+
+                    if ($index === 0) {
+                        copy($destination, $thumbnailFolder . "thumbnail.jpg");
+                    }
+                }
+            }
+
             return [
                 "success" => true,
                 "message" => "Property updated successfully",
@@ -248,6 +491,24 @@ class RealtorApp {
         }
 
         return $this->settings['openCageLeafletApiKey'];
+    }
+
+    public function getPropertyImages($propertyId) {
+        header('Content-Type: application/json');
+
+        $directoryPath = __DIR__ . "/../img/$propertyId"; 
+        $baseUrl = "../../backend/img/$propertyId"; 
+        $images = [];
+
+        if (is_dir($directoryPath)) {
+            $files = scandir($directoryPath);
+            foreach ($files as $file) {
+                if ($file !== "." && $file !== "..") {
+                    $images[] = "$baseUrl/$file";
+                }
+            }
+        }
+        return $images;
     }
 
     public function getPropertyList($numberOfHouses, $startingPoint) {

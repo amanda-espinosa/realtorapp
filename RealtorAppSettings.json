@@ -3,5 +3,14 @@
   "user": "",
   "password": "",
   "database": "",
-  "openCageLeafletApiKey": ""
+  "openCageLeafletApiKey": "",
+  "SMTP": {
+	"host": "",
+	"port": 0,
+	"username": "",
+	"password": "",
+	"clientid": "",
+	"clientsecret": "",
+	"refreshtoken": ""
+  }
 }

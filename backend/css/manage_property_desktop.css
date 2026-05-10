@@ -57,6 +57,18 @@
         align-items: center;
     }
 
+    #mainSection {
+        width: 90%;
+    }
+
+    #popUpContainer {
+        width: 100%;
+    }
+
+    #editForm {
+        width: 100%;
+    }
+
     /*gallery*/
     #gallery {
         display: flex;
@@ -65,8 +77,9 @@
         align-items: stretch;
         position: relative;
         gap: 10px;
-        width: fit-content;
+        width: 100%;
         margin: 10px 0;
+        height: 60vh;
     }
 
     #mainPhotoContainer {
