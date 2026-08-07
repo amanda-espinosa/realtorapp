@@ -362,7 +362,6 @@ window.addEventListener("DOMContentLoaded", async () => {
 
             console.log("RAW (first 300 chars):", raw.slice(0, 300));
 
-
             let data;
             try {
                 data = JSON.parse(raw);

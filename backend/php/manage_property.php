@@ -30,6 +30,11 @@ $realtorapp->verifyLogin();
     <link href="../../css/filepond.min.css" rel="stylesheet">
     <link href="../../css/filepond-plugin-image-preview.min.css" rel="stylesheet">
 
+    <link rel="apple-touch-icon" sizes="180x180" href="/wordpress/realtorapp/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/wordpress/realtorapp/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/wordpress/realtorapp/favicon-16x16.png">
+    <link rel="manifest" href="/wordpress/realtorapp/site.webmanifest">
+
 
     <script src="../../js/jquery-3.7.1.js"></script>
     <script src="../../js/jquery.fancybox.min.js"></script>
@@ -52,8 +57,6 @@ $realtorapp->verifyLogin();
                 <form id="editForm" action="">
                     <div id="gallery">
                         <input type="file" class="filepond" multiple>
-                        <!--<div id="mainPhotoContainer"></div>
-                        <div id="galleryRight"></div>-->
                     </div>
                     <div id="property">
                         <div id="info">
@@ -241,28 +244,7 @@ $realtorapp->verifyLogin();
                                     <input id="hoa_cost" class="inputValue" type="number" step="0.01" min="0"
                                         max="9999999999.99" data-previous_content="">
                                 </div>
-                                <!--
-                                <div class="field-row">
-                                    <label for="location" class="label">HOA location:</label>
-                                    <input id="location" data-previous_content="" type="text">
-                                </div>
--->
                             </div>
-                            <!--
-                            <div class="column" id="nearbySchools">
-                                <div class="field-row">
-                                    <label for="school_name" class="label">School name:</label>
-                                    <input id="school_name" data-previous_content="" type="text">
-                                </div>
-                                <div class="field-row">
-                                    <label for="school_grade" class="label">School grades:</label>
-                                    <input id="school_grade" data-previous_content="" type="text">
-                                </div>
-                                <div class="field-row">
-                                    <label for="school_distance" class="label">School distance:</label>
-                                    <input id="school_distance" data-previous_content="" type="text">
-                                </div>
-                            </div>-->
                         </div>
                     </div>
                 </form>

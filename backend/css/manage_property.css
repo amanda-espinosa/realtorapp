@@ -266,7 +266,6 @@ textarea:disabled {
 .filepond--image-preview {
     height: 110px;
     border-radius: 6px;
-    overflow: hidden;
     overflow: scroll;
 }
 

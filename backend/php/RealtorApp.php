@@ -1,9 +1,9 @@
 <?php
 error_reporting(E_ALL);
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
+ini_set("display_errors", 1);
+ini_set("display_startup_errors", 1);
 
-require __DIR__ . '/vendor/autoload.php';
+require __DIR__ . "/vendor/autoload.php";
 
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\SMTP;
@@ -11,44 +11,58 @@ use PHPMailer\PHPMailer\OAuth;
 use PHPMailer\PHPMailer\Exception;
 use League\OAuth2\Client\Provider\Google;
 
-class RealtorApp {
+class RealtorApp
+{
     private array $settings;
     private $connection;
 
-    public function __construct($settingsPath) {
+    public function __construct($settingsPath)
+    {
         $this->settings = json_decode(file_get_contents($settingsPath), true);
     }
 
-    private function connectDatabase() {
+    private function connectDatabase()
+    {
         $this->connection = new mysqli(
-            $this->settings['host'], $this->settings['user'], $this->settings['password'], $this->settings['database']);
-        
+            $this->settings["host"],
+            $this->settings["user"],
+            $this->settings["password"],
+            $this->settings["database"],
+        );
+
         if ($this->connection->connect_errno) {
             printf("Connect failed: %s", $this->connection->connect_error);
             exit();
         }
     }
 
-    private function getPdoInstance() {
-        $dbConfig = "mysql:host={$this->settings['host']};dbname={$this->settings['database']};charset=utf8mb4";
+    private function getPdoInstance()
+    {
+        $dbConfig = "mysql:host={$this->settings["host"]};dbname={$this->settings["database"]};charset=utf8mb4";
 
         try {
-            $pdo = new PDO($dbConfig, $this->settings['user'], $this->settings['password'], [
-                PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION
-            ]);
+            $pdo = new PDO(
+                $dbConfig,
+                $this->settings["user"],
+                $this->settings["password"],
+                [
+                    PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+                ],
+            );
         } catch (PDOException $error) {
             die("PDO connection failed: " . $error->getMessage());
         }
         return $pdo;
     }
 
-    private function deleteDirectory(string $directory) {
+    private function deleteDirectory(string $directory)
+    {
         if (!is_dir($directory)) {
             return;
         }
 
         foreach (scandir($directory) as $file) {
-            if ($file === '.' || $file === '..') {
+            if ($file === "." || $file === "..") {
                 continue;
             }
 
@@ -64,73 +78,89 @@ class RealtorApp {
         rmdir($directory);
     }
 
-    public function createProperty($propertyJson, $images) {
-
-        if (!isset($_POST['property'])) {
+    public function createProperty($propertyJson, $images)
+    {
+        if (!isset($_POST["property"])) {
             return ["success" => false, "error" => "Missing property data"];
         }
-        
+
         $property = json_decode($propertyJson, true);
         if ($property === null) {
             return ["success" => false, "error" => "Invalid JSON"];
         }
 
-        $MySQLNumericTypes = ["float", "decimal", "double", "int", "tinyint", "smallint", "mediumint", "bigint"];
+        $MySQLNumericTypes = [
+            "float",
+            "decimal",
+            "double",
+            "int",
+            "tinyint",
+            "smallint",
+            "mediumint",
+            "bigint",
+        ];
 
         $this->connectDatabase();
 
         $propertyDefinition = [];
-        $database = $this->settings['database'];
+        $database = $this->settings["database"];
 
-        $result = mysqli_query($this->connection, "
+        ($result = mysqli_query(
+            $this->connection,
+            "
             SELECT COLUMN_NAME, DATA_TYPE, CHARACTER_MAXIMUM_LENGTH, NUMERIC_PRECISION, NUMERIC_SCALE
             FROM INFORMATION_SCHEMA.COLUMNS
             WHERE TABLE_SCHEMA = '$database'
             AND TABLE_NAME = 'properties_list'
-        ") or die(json_encode(["error" => mysqli_error($this->connection)]));
+        ",
+        )) or die(json_encode(["error" => mysqli_error($this->connection)]));
 
         while ($dataArray = mysqli_fetch_array($result)) {
             $propertyDefinition[] = [
-                "COLUMN_NAME" => $dataArray['COLUMN_NAME'],
-                "DATA_TYPE" => $dataArray['DATA_TYPE'],
-                "CHARACTER_MAXIMUM_LENGTH" => $dataArray['CHARACTER_MAXIMUM_LENGTH'],
-                "NUMERIC_PRECISION" => $dataArray['NUMERIC_PRECISION'],
-                "NUMERIC_SCALE" => $dataArray['NUMERIC_SCALE']
+                "COLUMN_NAME" => $dataArray["COLUMN_NAME"],
+                "DATA_TYPE" => $dataArray["DATA_TYPE"],
+                "CHARACTER_MAXIMUM_LENGTH" =>
+                    $dataArray["CHARACTER_MAXIMUM_LENGTH"],
+                "NUMERIC_PRECISION" => $dataArray["NUMERIC_PRECISION"],
+                "NUMERIC_SCALE" => $dataArray["NUMERIC_SCALE"],
             ];
         }
 
-        unset($property['id']);
+        unset($property["id"]);
 
         $columns = [];
         $values = [];
 
         foreach ($property as $column => $value) {
-
-            $definitionSearch = array_filter($propertyDefinition, function ($item) use ($column) {
-                return $item['COLUMN_NAME'] === $column;
+            $definitionSearch = array_filter($propertyDefinition, function (
+                $item,
+            ) use ($column) {
+                return $item["COLUMN_NAME"] === $column;
             });
 
             if (!empty($definitionSearch)) {
                 $definition = array_values($definitionSearch)[0];
-                $type = $definition['DATA_TYPE'];
+                $type = $definition["DATA_TYPE"];
 
                 if (in_array($type, $MySQLNumericTypes)) {
-                   if ($value === "" || $value === null) {
-                    $columns[] = $column;
-                    $values[] = "NULL";
-                } elseif (is_numeric($value)) {
-                    $columns[] = $column;
-                    $values[] = $value;
+                    if ($value === "" || $value === null) {
+                        $columns[] = $column;
+                        $values[] = "NULL";
+                    } elseif (is_numeric($value)) {
+                        $columns[] = $column;
+                        $values[] = $value;
+                    } else {
+                        continue;
+                    }
                 } else {
-                    continue;
-                }
-                } 
-                else {
                     if ($value === null || $value === "") {
                         $columns[] = $column;
                         $values[] = "NULL";
                     } else {
-                        $escapedValue = mysqli_real_escape_string($this->connection, $value);
+                        $escapedValue = mysqli_real_escape_string(
+                            $this->connection,
+                            $value,
+                        );
                         $columns[] = $column;
                         $values[] = "'$escapedValue'";
                     }
@@ -148,34 +178,34 @@ class RealtorApp {
         $sql = "INSERT INTO properties_list ($columnsClause) VALUES ($valuesClause)";
 
         if (mysqli_query($this->connection, $sql)) {
-
             $insertId = mysqli_insert_id($this->connection);
 
             $imagesFolder = __DIR__ . "/../img/$insertId/";
             $thumbnailFolder = __DIR__ . "/../houseThumbnail/$insertId/";
-            
+
             $maxImages = 50;
             $maxTotalSize = 100 * 1024 * 1024; // 100 MB
 
-            $totalImages = isset($images['name']) ? count($images['name']) : 0;
+            $totalImages = isset($images["name"]) ? count($images["name"]) : 0;
 
             if ($totalImages > $maxImages) {
                 return [
                     "success" => false,
-                    "error" => "You can upload a maximum of 50 images"
+                    "error" => "You can upload a maximum of 50 images",
                 ];
             }
 
             $totalSize = 0;
 
-            foreach ($images['size'] as $size) {
+            foreach ($images["size"] as $size) {
                 $totalSize += $size;
             }
 
             if ($totalSize > $maxTotalSize) {
                 return [
                     "success" => false,
-                    "error" => "The total size of all images cannot exceed 100 MB"
+                    "error" =>
+                        "The total size of all images cannot exceed 100 MB",
                 ];
             }
 
@@ -184,17 +214,17 @@ class RealtorApp {
             }
 
             if ($totalImages > 0) {
-
-                foreach ($images['tmp_name'] as $index => $tmpName) {
-
-                    if ($images['error'][$index] !== UPLOAD_ERR_OK) {
+                foreach ($images["tmp_name"] as $index => $tmpName) {
+                    if ($images["error"][$index] !== UPLOAD_ERR_OK) {
                         continue;
                     }
 
-                    $originalName = $images['name'][$index];
-                    $extension = strtolower(pathinfo($originalName, PATHINFO_EXTENSION));
+                    $originalName = $images["name"][$index];
+                    $extension = strtolower(
+                        pathinfo($originalName, PATHINFO_EXTENSION),
+                    );
 
-                    $allowed = ['jpg', 'jpeg', 'png', 'webp'];
+                    $allowed = ["jpg", "jpeg", "png", "webp"];
 
                     if (!in_array($extension, $allowed)) {
                         continue;
@@ -220,70 +250,66 @@ class RealtorApp {
             return [
                 "success" => true,
                 "message" => "Property inserted successfully",
-                "inserted_id" => $insertId
+                "inserted_id" => $insertId,
             ];
-
         } else {
-
             $error = mysqli_error($this->connection);
             $this->connection->close();
 
             return [
                 "success" => false,
-                "error" => $error
+                "error" => $error,
             ];
         }
     }
 
-    public function createUser($email, $username, $password, $role) {
+    public function createUser($email, $username, $password, $role)
+    {
         try {
-            $pdo  = $this->getPdoInstance();
+            $pdo = $this->getPdoInstance();
             $auth = new \Delight\Auth\Auth($pdo);
 
             $userId = $auth->register($email, $password, $username);
 
             $roleMap = [
-                'ADMIN'      => \Delight\Auth\Role::ADMIN,
-                'MAINTAINER' => \Delight\Auth\Role::MAINTAINER,
+                "ADMIN" => \Delight\Auth\Role::ADMIN,
+                "MAINTAINER" => \Delight\Auth\Role::MAINTAINER,
             ];
 
             if (!isset($roleMap[$role])) {
                 return ["success" => false, "error" => "Invalid role"];
             }
 
-            $auth->admin()->addRoleForUserById((int)$userId, $roleMap[$role]);
+            $auth->admin()->addRoleForUserById((int) $userId, $roleMap[$role]);
 
-            return ["success" => true, "user_id" => (int)$userId];
-        }
-        catch (\Delight\Auth\InvalidEmailException $e) {
+            return ["success" => true, "user_id" => (int) $userId];
+        } catch (\Delight\Auth\InvalidEmailException $e) {
             return ["success" => false, "error" => "Invalid email"];
-        }
-        catch (\Delight\Auth\InvalidPasswordException $e) {
+        } catch (\Delight\Auth\InvalidPasswordException $e) {
             return ["success" => false, "error" => "Invalid password"];
-        }
-        catch (\Delight\Auth\UserAlreadyExistsException $e) {
+        } catch (\Delight\Auth\UserAlreadyExistsException $e) {
             return ["success" => false, "error" => "User already exists"];
-        }
-        catch (\Throwable $e) {
+        } catch (\Throwable $e) {
             return ["success" => false, "error" => $e->getMessage()];
         }
     }
 
-    public function deleteProperty($id) {
+    public function deleteProperty($id)
+    {
         $this->connectDatabase();
 
         header("Content-Type: application/json");
         // TODO verify id can be converted to int
-        $propertyId = (int)$id;
+        $propertyId = (int) $id;
 
         $statement = $this->connection->prepare(
-            "DELETE FROM properties_list WHERE id = ?"
+            "DELETE FROM properties_list WHERE id = ?",
         );
 
         if (!$statement) {
             return [
                 "success" => false,
-                "error" => $this->connection->error
+                "error" => $this->connection->error,
             ];
         }
 
@@ -295,7 +321,7 @@ class RealtorApp {
             $this->connection->close();
             return [
                 "success" => false,
-                "error" => $error
+                "error" => $error,
             ];
         }
 
@@ -309,81 +335,96 @@ class RealtorApp {
         $this->deleteDirectory($thumbnailDir);
 
         return [
-            "success" => true
+            "success" => true,
         ];
     }
 
-    public function deleteUserById($userId) {
+    public function deleteUserById($userId)
+    {
         try {
-            $pdo  = $this->getPdoInstance();
+            $pdo = $this->getPdoInstance();
             $auth = new \Delight\Auth\Auth($pdo);
 
             $auth->admin()->deleteUserById($userId);
 
             return ["success" => true];
-        }
-        catch (\Throwable $e) {
+        } catch (\Throwable $e) {
             return ["success" => false, "error" => $e->getMessage()];
         }
     }
 
-    public function editProperty($propertyJson, $images) {
+    public function editProperty($propertyJson, $images)
+    {
         $MySQLDataType = ["float", "decimal", "double"];
         $this->connectDatabase();
 
         $property = json_decode($propertyJson, true);
 
-        if (!$property && !isset($property['id'])) {
+        if (!$property && !isset($property["id"])) {
             return ["success" => false, "error" => "Invalid or missing ID"];
-            exit;
+            exit();
         }
 
         $propertyDefinition = [];
-        $database = $this->settings['database']; 
+        $database = $this->settings["database"];
 
-        $result = mysqli_query($this->connection, "
-            SELECT 
-            COLUMN_NAME, 
-            DATA_TYPE, 
+        ($result = mysqli_query(
+            $this->connection,
+            "
+            SELECT
+            COLUMN_NAME,
+            DATA_TYPE,
             CHARACTER_MAXIMUM_LENGTH,
             NUMERIC_PRECISION,
             NUMERIC_SCALE
             FROM INFORMATION_SCHEMA.COLUMNS
             WHERE TABLE_SCHEMA = '$database'
             AND TABLE_NAME = 'properties_list'
-        ") or die(json_encode(["error" => mysqli_error($this->connection)]));
+        ",
+        )) or die(json_encode(["error" => mysqli_error($this->connection)]));
 
         while ($dataArray = mysqli_fetch_array($result)) {
             $propertyDefinition[] = [
-                "COLUMN_NAME" => $dataArray['COLUMN_NAME'],
-                "DATA_TYPE" => $dataArray['DATA_TYPE'],
-                "CHARACTER_MAXIMUM_LENGTH" => $dataArray['CHARACTER_MAXIMUM_LENGTH'],
-                "NUMERIC_PRECISION" => $dataArray['NUMERIC_PRECISION'],
-                "NUMERIC_SCALE" => $dataArray['NUMERIC_SCALE']
+                "COLUMN_NAME" => $dataArray["COLUMN_NAME"],
+                "DATA_TYPE" => $dataArray["DATA_TYPE"],
+                "CHARACTER_MAXIMUM_LENGTH" =>
+                    $dataArray["CHARACTER_MAXIMUM_LENGTH"],
+                "NUMERIC_PRECISION" => $dataArray["NUMERIC_PRECISION"],
+                "NUMERIC_SCALE" => $dataArray["NUMERIC_SCALE"],
             ];
         }
-        
-        $id = (int)$property['id'];
-        unset($property['id']); 
+
+        $id = (int) $property["id"];
+        unset($property["id"]);
 
         $setParts = [];
         foreach ($property as $column => $value) {
-            $definitionSearch = array_filter($propertyDefinition, function ($item) use ($column) {
-                return $item['COLUMN_NAME'] === $column;
+            $definitionSearch = array_filter($propertyDefinition, function (
+                $item,
+            ) use ($column) {
+                return $item["COLUMN_NAME"] === $column;
             });
 
             if (!empty($definitionSearch)) {
                 $definition = array_values($definitionSearch)[0]; // first matching element
-                if (in_array($definition['DATA_TYPE'], $MySQLDataType) && !is_numeric($value)) continue;
+                if (
+                    in_array($definition["DATA_TYPE"], $MySQLDataType) &&
+                    !is_numeric($value)
+                ) {
+                    continue;
+                }
 
-                $value = $value === null ? $value : mysqli_real_escape_string($this->connection, $value);
+                $value =
+                    $value === null
+                        ? $value
+                        : mysqli_real_escape_string($this->connection, $value);
                 $setParts[] = "`$column` = '$value'";
-            } 
+            }
         }
 
         if (empty($setParts)) {
             return ["success" => false, "error" => "No data to update"];
-            exit;
+            exit();
         }
 
         $setClause = implode(", ", $setParts);
@@ -398,25 +439,26 @@ class RealtorApp {
             $maxImages = 50;
             $maxTotalSize = 100 * 1024 * 1024; // 100 MB
 
-            $totalImages = isset($images['name']) ? count($images['name']) : 0;
+            $totalImages = isset($images["name"]) ? count($images["name"]) : 0;
 
             if ($totalImages > $maxImages) {
                 return [
                     "success" => false,
-                    "error" => "You can upload a maximum of 50 images"
+                    "error" => "You can upload a maximum of 50 images",
                 ];
             }
 
             $totalSize = 0;
 
-            foreach ($images['size'] as $size) {
+            foreach ($images["size"] as $size) {
                 $totalSize += $size;
             }
 
             if ($totalSize > $maxTotalSize) {
                 return [
                     "success" => false,
-                    "error" => "The total size of all images cannot exceed 100 MB"
+                    "error" =>
+                        "The total size of all images cannot exceed 100 MB",
                 ];
             }
 
@@ -436,17 +478,17 @@ class RealtorApp {
             }
 
             if ($totalImages > 0) {
-
-                foreach ($images['tmp_name'] as $index => $tmpName) {
-
-                    if ($images['error'][$index] !== UPLOAD_ERR_OK) {
+                foreach ($images["tmp_name"] as $index => $tmpName) {
+                    if ($images["error"][$index] !== UPLOAD_ERR_OK) {
                         continue;
                     }
 
-                    $originalName = $images['name'][$index];
-                    $extension = strtolower(pathinfo($originalName, PATHINFO_EXTENSION));
+                    $originalName = $images["name"][$index];
+                    $extension = strtolower(
+                        pathinfo($originalName, PATHINFO_EXTENSION),
+                    );
 
-                    $allowed = ['jpg', 'jpeg', 'png', 'webp'];
+                    $allowed = ["jpg", "jpeg", "png", "webp"];
 
                     if (!in_array($extension, $allowed)) {
                         continue;
@@ -466,38 +508,40 @@ class RealtorApp {
             return [
                 "success" => true,
                 "message" => "Property updated successfully",
-                "query" => $sql
+                "query" => $sql,
             ];
         } else {
             $this->connection->close();
             return [
                 "success" => false,
-                "error" => mysqli_error($this->connection)
+                "error" => mysqli_error($this->connection),
             ];
         }
     }
 
-    public function getLoggedUsername() {
+    public function getLoggedUsername()
+    {
         $pdo = $this->getPdoInstance();
-    
+
         $auth = new \Delight\Auth\Auth($pdo);
-        return $auth->getUsername() ?? '';
+        return $auth->getUsername() ?? "";
     }
 
-    public function getOpenCageKey() {
-
-        if (!isset($this->settings['openCageLeafletApiKey'])) {
+    public function getOpenCageKey()
+    {
+        if (!isset($this->settings["openCageLeafletApiKey"])) {
             return "";
         }
 
-        return $this->settings['openCageLeafletApiKey'];
+        return $this->settings["openCageLeafletApiKey"];
     }
 
-    public function getPropertyImages($propertyId) {
-        header('Content-Type: application/json');
+    public function getPropertyImages($propertyId)
+    {
+        header("Content-Type: application/json");
 
-        $directoryPath = __DIR__ . "/../img/$propertyId"; 
-        $baseUrl = "../../backend/img/$propertyId"; 
+        $directoryPath = __DIR__ . "/../img/$propertyId";
+        $baseUrl = "../../backend/img/$propertyId";
         $images = [];
 
         if (is_dir($directoryPath)) {
@@ -511,70 +555,79 @@ class RealtorApp {
         return $images;
     }
 
-    public function getPropertyList($numberOfHouses, $startingPoint) {
-        header('Access-Control-Allow-Origin: *');
-        header('Access-Control-Allow-Methods: GET, POST, OPTIONS');
-        header('Access-Control-Allow-Headers: Content-Type');
-        header('Content-Type: application/json');
+    public function getPropertyList($numberOfHouses, $startingPoint)
+    {
+        header("Access-Control-Allow-Origin: *");
+        header("Access-Control-Allow-Methods: GET, POST, OPTIONS");
+        header("Access-Control-Allow-Headers: Content-Type");
+        header("Content-Type: application/json");
 
         $this->connectDatabase();
 
         $houses = [];
         $columnNames = [];
-        $database = $this->settings['database']; 
+        $database = $this->settings["database"];
 
-        $columnNameResult = mysqli_query($this->connection, "
-            SELECT COLUMN_NAME 
-            FROM INFORMATION_SCHEMA.COLUMNS 
+        ($columnNameResult = mysqli_query(
+            $this->connection,
+            "
+            SELECT COLUMN_NAME
+            FROM INFORMATION_SCHEMA.COLUMNS
             WHERE TABLE_SCHEMA = '$database'
             AND TABLE_NAME = 'properties_list'
-        ") or die(json_encode(["error" => mysqli_error($this->connection)]));
+        ",
+        )) or die(json_encode(["error" => mysqli_error($this->connection)]));
 
         while ($dataArray = mysqli_fetch_array($columnNameResult)) {
-            $columnNames[] = $dataArray['COLUMN_NAME']; 
+            $columnNames[] = $dataArray["COLUMN_NAME"];
         }
 
-        $countRows = mysqli_query($this->connection, "SELECT COUNT(*) AS total FROM properties_list")
-            or die(json_encode(["error" => mysqli_error($this->connection)]));
-        $totalRows = (int)mysqli_fetch_assoc($countRows)['total'];
+        ($countRows = mysqli_query(
+            $this->connection,
+            "SELECT COUNT(*) AS total FROM properties_list",
+        )) or die(json_encode(["error" => mysqli_error($this->connection)]));
+        $totalRows = (int) mysqli_fetch_assoc($countRows)["total"];
 
         $query = "SELECT * FROM properties_list LIMIT $numberOfHouses OFFSET $startingPoint";
-        $dataSelection = mysqli_query($this->connection, $query)
-            or die(json_encode(["error" => mysqli_error($this->connection)]));
+        ($dataSelection = mysqli_query($this->connection, $query)) or
+            die(json_encode(["error" => mysqli_error($this->connection)]));
 
         while ($dataArray = mysqli_fetch_assoc($dataSelection)) {
             $house = [];
             foreach ($columnNames as $columnName) {
                 $house[$columnName] = $dataArray[$columnName];
             }
-            $houses[] = $house; 
+            $houses[] = $house;
         }
 
         mysqli_close($this->connection);
 
         return [
             "totalRows" => $totalRows,
-            "houses" => $houses
+            "houses" => $houses,
         ];
     }
 
-    public function incrementViews($id) {
+    public function incrementViews($id)
+    {
         $this->connectDatabase();
 
-         if ($this->connection->connect_error) {
+        if ($this->connection->connect_error) {
             http_response_code(500);
             echo json_encode(["error" => "Database connection failed"]);
-            exit;
+            exit();
         }
 
-        if (!isset($_POST['id'])) {
+        if (!isset($_POST["id"])) {
             http_response_code(400);
             echo json_encode(["error" => "Missing property ID"]);
-            exit;
+            exit();
         }
 
-        $id = intval($_POST['id']);
-        $stmt = $this->connection->prepare("UPDATE properties_list SET views_count = views_count + 1 WHERE id = ?");
+        $id = intval($_POST["id"]);
+        $stmt = $this->connection->prepare(
+            "UPDATE properties_list SET views_count = views_count + 1 WHERE id = ?",
+        );
         $stmt->bind_param("i", $id);
 
         if ($stmt->execute()) {
@@ -582,78 +635,81 @@ class RealtorApp {
             return ["success" => true];
         } else {
             $stmt->close();
-            return ["success" => false, "error" => $connection->error];
+            return ["success" => false, "error" => $this->connection->error];
         }
     }
 
-    public function isAdmin() {
+    public function isAdmin()
+    {
         $pdo = $this->getPdoInstance();
-    
+
         $auth = new \Delight\Auth\Auth($pdo);
 
         return $auth->hasAnyRole(\Delight\Auth\Role::ADMIN);
     }
 
-    public function login($email, $password, $remember = false) {
+    public function login($email, $password, $remember = false)
+    {
         $pdo = $this->getPdoInstance();
-    
+
         $auth = new \Delight\Auth\Auth($pdo);
 
-        $rememberDuration = $remember ? (60 * 60 * 24 * 30) : null;
+        $rememberDuration = $remember ? 60 * 60 * 24 * 30 : null;
 
         try {
             $auth->login($email, $password, $rememberDuration);
 
             return [
-            "success" => true,
-            "message" => "Login successful"
+                "success" => true,
+                "message" => "Login successful",
             ];
-        }
-        catch (\Delight\Auth\InvalidEmailException $e) {
+        } catch (\Delight\Auth\InvalidEmailException $e) {
             return ["success" => false, "message" => "Wrong email address"];
-        }
-        catch (\Delight\Auth\InvalidPasswordException $e) {
+        } catch (\Delight\Auth\InvalidPasswordException $e) {
             return ["success" => false, "message" => "Wrong password"];
-        }
-        catch (\Delight\Auth\EmailNotVerifiedException $e) {
+        } catch (\Delight\Auth\EmailNotVerifiedException $e) {
             return ["success" => false, "message" => "Email not verified"];
-        }
-        catch (\Delight\Auth\TooManyRequestsException $e) {
-            return ["success" => false, "message" => "Too many login attempts. Try again later"];
+        } catch (\Delight\Auth\TooManyRequestsException $e) {
+            return [
+                "success" => false,
+                "message" => "Too many login attempts. Try again later",
+            ];
         }
     }
 
-    public function logout() {
+    public function logout()
+    {
         $pdo = $this->getPdoInstance();
-    
+
         $auth = new \Delight\Auth\Auth($pdo);
-        
+
         try {
             $auth->logOut();
             $auth->destroySession();
 
             return [
                 "success" => true,
-                "message" => "Logged out successfully"
+                "message" => "Logged out successfully",
             ];
-        }
-        catch (Exception $e) {
+        } catch (Exception $e) {
             return [
                 "success" => false,
-                "message" => $e->getMessage()
+                "message" => $e->getMessage(),
             ];
         }
     }
 
-    public function propertyDefinition() {
+    public function propertyDefinition()
+    {
         $this->connectDatabase();
-        $database = $this->settings['database'];
+        $database = $this->settings["database"];
+        $propertyDefinition[] = [];
 
-        $sql = "SELECT 
-            COLUMN_NAME, 
-            DATA_TYPE, 
-            CHARACTER_MAXIMUM_LENGTH, 
-            NUMERIC_PRECISION, 
+        $sql = "SELECT
+            COLUMN_NAME,
+            DATA_TYPE,
+            CHARACTER_MAXIMUM_LENGTH,
+            NUMERIC_PRECISION,
             NUMERIC_SCALE
             FROM INFORMATION_SCHEMA.COLUMNS
             WHERE TABLE_SCHEMA = ? AND TABLE_NAME = 'properties_list'";
@@ -668,9 +724,9 @@ class RealtorApp {
         $stmt->bind_param("s", $database);
 
         if (!$stmt->execute()) {
-            $err = $stmt->error; 
-            $stmt->close(); 
-            $this->connection->close(); 
+            $err = $stmt->error;
+            $stmt->close();
+            $this->connection->close();
             return ["success" => false, "error" => $err];
         }
 
@@ -679,57 +735,62 @@ class RealtorApp {
         while ($row = $result->fetch_assoc()) {
             $propertyDefinition[] = $row;
         }
-        
+
         $stmt->close();
         $this->connection->close();
 
         return ["success" => true, "definition" => $propertyDefinition];
     }
 
-    public function registerUser($email, $password, $username) {
+    public function registerUser($email, $password, $username)
+    {
         $pdo = $this->getPdoInstance();
-    
         $auth = new \Delight\Auth\Auth($pdo);
+
         try {
             $userId = $auth->register(
                 $email,
                 $password,
-                $username,
+                $username /*,
                 function ($selector, $token) {
                     $registerToken = [
                         "selector" => $selector,
                         "token" => $token
                     ];
-                }
+                }*/
             );
+
+            $usersCount = $pdo->query("SELECT COUNT(*) FROM users")->fetchColumn();
+
+            if ($usersCount == 1) {
+                $auth->admin()->addRoleForUserById($userId,\Delight\Auth\Role::ADMIN);
+            }
+
             return [
                 "success" => true,
-                "userId" => $userId,
-                "verification" => $registerToken ?? null
+                "userId" => $userId /*,
+                 "verification" => $registerToken ?? null */,
             ];
-        }
-        catch (\Delight\Auth\InvalidEmailException $e) {
+        } catch (\Delight\Auth\InvalidEmailException $e) {
             return ["success" => false, "message" => "Invalid email"];
-        }
-        catch (\Delight\Auth\InvalidPasswordException $e) {
+        } catch (\Delight\Auth\InvalidPasswordException $e) {
             return ["success" => false, "message" => "Invalid password"];
-        }
-        catch (\Delight\Auth\UserAlreadyExistsException $e) {
+        } catch (\Delight\Auth\UserAlreadyExistsException $e) {
             return ["success" => false, "message" => "User already exists"];
-        }
-        catch (\Delight\Auth\TooManyRequestsException $e) {
+        } catch (\Delight\Auth\TooManyRequestsException $e) {
             return ["success" => false, "message" => "Too many requests"];
-        }
-        catch (Exception $e) {
+        } catch (\Exception $e) {
             return ["success" => false, "message" => $e->getMessage()];
         }
     }
 
-    public function requestUsers() {
+    public function requestUsers()
+    {
         $this->connectDatabase();
         $users = [];
 
-        $query = "SELECT id, email, username, status, roles_mask, registered, last_login FROM users"; 
+        $query =
+            "SELECT id, email, username, status, roles_mask, registered, last_login FROM users";
         $result = mysqli_query($this->connection, $query);
 
         if (!$result) {
@@ -737,19 +798,19 @@ class RealtorApp {
         }
 
         if ($result->num_rows > 0) {
-        
             while ($dataArray = mysqli_fetch_assoc($result)) {
-                $users[] = $dataArray; 
+                $users[] = $dataArray;
             }
         }
 
         $this->connection->close();
         return [
-            "users" => $users
+            "users" => $users,
         ];
     }
 
-    public function sendForm($name, $email, $phone, $appointment, $comments) {
+    public function sendForm($name, $email, $phone, $appointment, $comments)
+    {
         $mail = new PHPMailer(true);
 
         /*$name = trim($_POST["name"]);
@@ -759,36 +820,40 @@ class RealtorApp {
         $appointment = trim($_POST["appointment"]);*/
         $messageBody = "Name: $name\nEmail: $email\nPhone: $phone\nAppointment: $appointment\n\n$comments";
 
-        
         try {
-            $mail->isSMTP();                                            //Send using SMTP
-            $mail->Host = $this->settings['SMTP']['host'];
-            $mail->Port       = $this->settings['SMTP']['port'];
-            $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;         //Enable implicit TLS encryption  
-            
-            $mail->SMTPAuth   = true;                                   //Enable SMTP authentication
-            $mail->AuthType = 'XOAUTH2';  
-            $mail->Username   = $this->settings['SMTP']['username'];           //SMTP username
+            $mail->isSMTP(); //Send using SMTP
+            $mail->Host = $this->settings["SMTP"]["host"];
+            $mail->Port = $this->settings["SMTP"]["port"];
+            $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS; //Enable implicit TLS encryption
+
+            $mail->SMTPAuth = true; //Enable SMTP authentication
+            $mail->AuthType = "XOAUTH2";
+            $mail->Username = $this->settings["SMTP"]["username"]; //SMTP username
             //Server settings
-            $mail->SMTPDebug = SMTP::DEBUG_SERVER;                      //Enable verbose debug output
-            
+            $mail->SMTPDebug = SMTP::DEBUG_SERVER; //Enable verbose debug output
+
             //$mail->Password   = $this->settings['SMTP']['password'];                 //SMTP password
-            
-            $provider = new Google([        
-                'clientId'     => $this->settings['SMTP']['clientid'],
-                'clientSecret' => $this->settings['SMTP']['clientsecret'],
+
+            $provider = new Google([
+                "clientId" => $this->settings["SMTP"]["clientid"],
+                "clientSecret" => $this->settings["SMTP"]["clientsecret"],
             ]);
 
-            $mail->setOAuth(new OAuth([
-                'provider'     => $provider,
-                'clientId'     => $this->settings['SMTP']['clientid'],
-                'clientSecret' => $this->settings['SMTP']['clientsecret'],
-                'refreshToken' => $this->settings['SMTP']['refreshtoken'],
-                'userName'     => $this->settings['SMTP']['username']
-            ]));
+            $mail->setOAuth(
+                new OAuth([
+                    "provider" => $provider,
+                    "clientId" => $this->settings["SMTP"]["clientid"],
+                    "clientSecret" => $this->settings["SMTP"]["clientsecret"],
+                    "refreshToken" => $this->settings["SMTP"]["refreshtoken"],
+                    "userName" => $this->settings["SMTP"]["username"],
+                ]),
+            );
 
-            $mail->setFrom($this->settings['SMTP']['username'], 'Amanda Espinosa');
-            $mail->addAddress('egweminiyo@gmail.com');
+            $mail->setFrom(
+                $this->settings["SMTP"]["username"],
+                "Amanda Espinosa",
+            );
+            $mail->addAddress("egweminiyo@gmail.com");
             //TCP port to connect to; use 587 if you have set `SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS`
 
             //Recipients
@@ -804,21 +869,24 @@ class RealtorApp {
             //$mail->addAttachment('/tmp/image.jpg', 'new.jpg');    //Optional name
 
             //Content
-            $mail->isHTML(true);                                  //Set email format to HTML
-            $mail->Subject = 'Message from RealtorApp Web Form';
-            $mail->Body    = $messageBody;
+            $mail->isHTML(true); //Set email format to HTML
+            $mail->Subject = "Message from RealtorApp Web Form";
+            $mail->Body = $messageBody;
             $mail->AltBody = $messageBody;
-            $mail->CharSet = PHPMailer::CHARSET_UTF8; 
+            $mail->CharSet = PHPMailer::CHARSET_UTF8;
 
             $mail->send();
             return json_encode(["success" => true, "error" => ""]);
         } catch (Exception $e) {
-            return json_encode(["success" => false, "error" => "Message could not be sent. Mailer Error: {$mail->ErrorInfo}"]);
+            return json_encode([
+                "success" => false,
+                "error" => "Message could not be sent. Mailer Error: {$mail->ErrorInfo}",
+            ]);
         }
         /*
         $to = "amaramosespinosa@gmail.com";
         $subject = "New Contact from customer $name, ID property: $idProperty";
-        
+
         $headers = "From: amaramosespinosa@gmail.com\r\n";
         $headers .= "Reply-To: $email\r\n";
 
@@ -829,14 +897,17 @@ class RealtorApp {
         }*/
     }
 
-    public function updateCoordinates($id, $latitude, $longitude) {
+    public function updateCoordinates($id, $latitude, $longitude)
+    {
         $this->connectDatabase();
-        
-        $id = intval($_POST['id']);
-        $latitude = floatval($_POST['latitude']);
-        $longitude = floatval($_POST['longitude']);
 
-        $updateStatement = $this->connection->prepare("UPDATE properties_list SET latitude = ?, longitude = ? WHERE id = ?");
+        $id = intval($_POST["id"]);
+        $latitude = floatval($_POST["latitude"]);
+        $longitude = floatval($_POST["longitude"]);
+
+        $updateStatement = $this->connection->prepare(
+            "UPDATE properties_list SET latitude = ?, longitude = ? WHERE id = ?",
+        );
         $updateStatement->bind_param("ddi", $latitude, $longitude, $id);
 
         if ($updateStatement->execute()) {
@@ -844,13 +915,14 @@ class RealtorApp {
             return ["success" => true];
         } else {
             $updateStatement->close();
-            return ["success" => false, "error" => $connection->error];
+            return ["success" => false, "error" => $this->connection->error];
         }
     }
 
-    public function updateUserRole($userId, $role) {
+    public function updateUserRole($userId, $role)
+    {
         $roleMap = [
-            "ADMIN"      => \Delight\Auth\Role::ADMIN,
+            "ADMIN" => \Delight\Auth\Role::ADMIN,
             "MAINTAINER" => \Delight\Auth\Role::MAINTAINER,
         ];
 
@@ -859,39 +931,47 @@ class RealtorApp {
         }
 
         try {
-            $pdo  = $this->getPdoInstance();
+            $pdo = $this->getPdoInstance();
             $auth = new \Delight\Auth\Auth($pdo);
 
-            $auth->admin()->removeRoleForUserById($userId, \Delight\Auth\Role::ADMIN);
-            $auth->admin()->removeRoleForUserById($userId, \Delight\Auth\Role::MAINTAINER);  
+            $auth
+                ->admin()
+                ->removeRoleForUserById($userId, \Delight\Auth\Role::ADMIN);
+            $auth
+                ->admin()
+                ->removeRoleForUserById(
+                    $userId,
+                    \Delight\Auth\Role::MAINTAINER,
+                );
             $auth->admin()->addRoleForUserById($userId, $roleMap[$role]);
 
             return ["success" => true];
-        }
-        catch (\Throwable $e) {
+        } catch (\Throwable $e) {
             return ["success" => false, "error" => $e->getMessage()];
         }
     }
 
-    public function verifyAdmin() {
+    public function verifyAdmin()
+    {
         $pdo = $this->getPdoInstance();
-    
+
         $auth = new \Delight\Auth\Auth($pdo);
 
         if (!$auth->hasAnyRole(\Delight\Auth\Role::ADMIN)) {
             header("Location: management_homepage.php?error=admin_required");
-            exit;
+            exit();
         }
     }
 
-    public function verifyLogin() {
+    public function verifyLogin()
+    {
         $pdo = $this->getPdoInstance();
-    
+
         $auth = new \Delight\Auth\Auth($pdo);
 
         if ($auth->isLoggedIn() == false) {
             header("Location: ../html/login.html");
-            exit;
+            exit();
         }
     }
 }

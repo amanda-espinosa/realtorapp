@@ -94,9 +94,6 @@ label {
 
 button {
     padding: 9px 15px;
-    background-color: white;
-    border-radius: 5px;
-    border: solid 1px #ffffff;
     position: relative;
     margin: 0 80%;
     font-weight: bold;
@@ -116,7 +113,6 @@ button {
 }
 
 button:hover {
-    border: solid 1px #ffffff;
     position: relative;
     margin: 0 80%;
     font-weight: bold;
