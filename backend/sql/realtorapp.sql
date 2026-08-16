@@ -1,4 +1,14 @@
-
+/*
+ * RealtorApp
+ * Copyright (C) 2026 Amanda Espinosa Ramos
+ *
+ * This file is part of RealtorApp and is licensed under the
+ * GNU General Public License v3.0 only.
+ *
+ * See the LICENSE file in the project root for the complete
+ * license terms.
+ */
+ 
 -- Structure-only SQL for RealtorApp
 -- Creates the database if needed, selects it, and creates all required tables.
 -- No data is inserted.
