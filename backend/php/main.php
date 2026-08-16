@@ -16,18 +16,18 @@ if (isset($_GET['action'])) {
         case "createUser"           : createUser();             break;
         case "deleteProperty"       : deleteProperty();         break;
         case "deleteUserById"       : deleteUserById();         break;
-        case "editProperty"         : editProperty();           break;
+        case "editProperty"         : editProperty();           break; 
         case "getOpenCageKey"       : getOpenCageKey();         break;
         case "getPropertyImages"    : getPropertyImages();      break;
         case "getPropertyList"      : getPropertyList();        break;
-        case "incrementViews"       : incrementViews();         break;
+        case "incrementViews"       : incrementViews();         break;  
         case "login"                : login();                  break;
         case "logout"               : logout();                 break;
-        case "propertyDefinition"   : propertyDefinition();     break;
+        case "propertyDefinition"   : propertyDefinition();     break; 
         case "registerUser"         : registerUser();           break;
         case "requestUsers"         : requestUsers();           break;
         case "sendForm"             : sendForm();               break;
-        case "updateCoordinates"    : updateCoordinates();      break;
+        case "updateCoordinates"    : updateCoordinates();      break; 
         case "updateUserRole"       : updateUserRole();         break;
     }
 }
@@ -66,7 +66,7 @@ function createUser() {
         $password = $input["password"] ?? "";
         $role = $input["role"] ?? "";
 
-        echo json_encode($realtorapp->createUser($email, $username, $password, $role));
+        echo json_encode($realtorapp->createUser($email, $password, $username, $role));
         exit;
     }
 }
@@ -74,7 +74,7 @@ function createUser() {
 function deleteProperty() {
     global $realtorapp;
     $realtorapp->verifyLogin();
-
+    
     if (!isset($_POST["id"])) {
         echo json_encode(["success" => false, "error" => "Missing property id"]);
         return;
@@ -121,7 +121,7 @@ function getOpenCageKey() {
     global $realtorapp;
 
     $result = $realtorapp->getOpenCageKey();
-    echo $result;
+    echo $result; 
 }
 
 function getPropertyImages() {
@@ -160,14 +160,13 @@ function incrementViews() {
 function login()
 {
     global $realtorapp;
-    $login = $realtorapp->login($_POST['email'], $_POST['password'], isset($_POST['remember']));
+    $login = $realtorapp->login($_POST['email'], $_POST['password'], isset($_POST['remember'])); 
     if ($login['success']) {
         header("Location: management_homepage.php");
         exit;
     }
-    else {
-        echo $login['message'];
-    }
+    header("Location: ../html/login.html?error=" . urlencode($login["error"]));
+    exit;
 }
 
 function logout()
@@ -195,8 +194,8 @@ function registerUser()
     global $realtorapp;
     $registerUserResult = $realtorapp->registerUser(
         $_POST['email'],
-        $_POST['username'],
-        $_POST['password']
+        $_POST['password'],
+        $_POST['username']
     );
     echo json_encode($registerUserResult);
 }
@@ -205,28 +204,43 @@ function requestUsers() {
     global $realtorapp;
     header('Content-Type: application/json; charset=utf-8');
     $realtorapp->verifyLogin();
-
+    
     $result = $realtorapp->requestUsers();
     echo json_encode($result);
 }
 
 function sendForm() {
     global $realtorapp;
+    
+    header("Content-Type: application/json");
 
-    if ($_SERVER["REQUEST_METHOD"] === "POST") {
-        $name = trim($_POST["name"]);
-        $email = filter_var($_POST["email"], FILTER_VALIDATE_EMAIL);
-        $phone = trim($_POST["phone"]);
-        $comments = trim($_POST["comments"]);
-        $appointment = trim($_POST["appointment"]);
+    if ($_SERVER["REQUEST_METHOD"] !== "POST") {
+        http_response_code(405);
 
-        $result = $realtorapp->sendForm($name, $email, $phone, $appointment, $comments);
-        echo $result;
+        echo json_encode([
+            "success" => false,
+            "error" => "Method not allowed."
+        ]);
+        return;
     }
+
+    $name = $_POST["name"] ?? "";
+    $email = $_POST["email"] ?? "";
+    $phone = $_POST["phone"] ?? "";
+    $comments = $_POST["comments"] ?? "";
+    $appointment = $_POST["appointment"] ?? "";
+
+    echo $realtorapp->sendForm(
+        $name,
+        $email,
+        $phone,
+        $appointment,
+        $comments
+    );
 }
 
 function updateCoordinates() {
-    global $realtorapp;
+    global $realtorapp; 
 
     if (isset($_POST['id'], $_POST['latitude'], $_POST['longitude'])) {
         $result = $realtorapp->updateCoordinates($_POST['id'], $_POST['latitude'], $_POST['longitude']);
@@ -253,3 +267,4 @@ function updateUserRole() {
     exit;
 }
 ?>
+

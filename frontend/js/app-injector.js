@@ -6,7 +6,7 @@ if (!appContainer) {
 
 let iframe = document.createElement("iframe");
 
-iframe.src = "/realtorapp/frontend/html/properties_preview.html";
+iframe.src = "realtorapp/frontend/html/properties_preview.html";
 iframe.style.position = "relative";
 iframe.style.width = "100%";
 iframe.style.minHeight = "100vh";

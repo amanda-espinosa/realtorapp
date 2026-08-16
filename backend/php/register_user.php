@@ -18,10 +18,10 @@ if (!empty($users["users"])) {
     <link rel="stylesheet" href="../css/manage_users.css">
     <link rel="stylesheet" href="../css/register_user.css">
 
-    <link rel="apple-touch-icon" sizes="180x180" href="/wordpress/realtorapp/apple-touch-icon.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="/wordpress/realtorapp/favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="/wordpress/realtorapp/favicon-16x16.png">
-    <link rel="manifest" href="/wordpress/realtorapp/site.webmanifest">
+    <link rel="apple-touch-icon" sizes="180x180" href="../../img/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="../../img/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="../../img/favicon-16x16.png">
+    <link rel="manifest" href="../../img/site.webmanifest">
 
     <script src="../js/register_user.js"></script>
 </head>
@@ -51,3 +51,5 @@ if (!empty($users["users"])) {
 </body>
 
 </html>
+
+

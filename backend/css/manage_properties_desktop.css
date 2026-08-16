@@ -1,21 +1,31 @@
 nav {
     width: 100%;
-    padding: 10px 10px;
+    padding: 10px;
+    display: flex;
+    align-items: center;
+}
+
+#homeButtonContainer {
+    display: flex;
+    align-items: center;
 }
 
 nav ul {
-    margin: 0;
+    margin: 0 0 0 auto;
     padding-right: 20px;
     display: flex;
-    justify-content: flex-end;
+    justify-items: center;
     gap: 10px;
 }
 
 nav li {
-    display: inline-block;
+    display: flex;
+    align-items: center;
 }
 
 nav a {
+    display: flex;
+    align-items: center;
     padding: 8px 12px;
 }
 

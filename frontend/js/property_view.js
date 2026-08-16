@@ -1,11 +1,62 @@
 function init() {
-    function getQueryParam(param) {
-        let urlParams = new URLSearchParams(window.location.search);
-        return urlParams.get(param);
-    }
+  function getQueryParam(param) {
+      let urlParams = new URLSearchParams(window.location.search);
+      return urlParams.get(param);
+  }
 
-    let houseString = getQueryParam("house");
-    let house = JSON.parse(houseString);
+  let houseString = getQueryParam("house");
+  let house = JSON.parse(houseString);
+
+  function showNotification(type, message) {
+    let alert = `
+        <div class="alert alert-${type} alert-dismissible fade show" role="alert">
+            ${message}
+            <button
+                type="button"
+                class="btn-close"
+                data-bs-dismiss="alert"
+                aria-label="Close">
+            </button>
+        </div>
+    `;
+
+    $("#formNotification").html(alert);
+  }
+
+  $("#contactForm").on("submit", function (event) {
+    event.preventDefault();
+    
+    $.ajax({
+      url: "../../backend/php/main.php?action=sendForm",
+      method: "POST",
+      data: $(this).serialize(),
+      dataType: "json",
+  
+      success: function(response) {
+        if (response.success) {
+          showNotification(
+            "success",
+            "Thank you! Your message was sent successfully."
+          );
+          $("#contactForm")[0].reset();
+        } else {
+          showNotification(
+            "danger",
+            response.error ||"Your message could not be sent."
+          );
+        }
+      },
+      error: function (xhr, status, error) {
+        console.error("AJAX error:", error);
+        console.error("Server response:", xhr.responseText);
+
+        showNotification(
+          "danger",
+          "Something went wrong. Please try again later."
+        );
+      }
+    });
+  });
 
     fetch(`../../backend/php/main.php?action=getPropertyImages&id=${house.id}`)
         .then(response => response.json())
@@ -94,5 +145,8 @@ function init() {
         }, 200);
     }, 200);
 }
+
+
+
 
 window.addEventListener("DOMContentLoaded", init);

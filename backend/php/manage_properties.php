@@ -23,10 +23,10 @@ $realtorapp->verifyLogin();
 
     <link rel="stylesheet" href="../../css/leaflet.css">
 
-    <link rel="apple-touch-icon" sizes="180x180" href="/wordpress/realtorapp/apple-touch-icon.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="/wordpress/realtorapp/favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="/wordpress/realtorapp/favicon-16x16.png">
-    <link rel="manifest" href="/wordpress/realtorapp/site.webmanifest">
+    <link rel="apple-touch-icon" sizes="180x180" href="../../img/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="../../img/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="../../img/favicon-16x16.png">
+    <link rel="manifest" href="../../img/site.webmanifest">
 
     <script src="../../js/jquery-3.7.1.js"></script>
     <script src="../../js/leaflet.js"></script>
@@ -36,6 +36,9 @@ $realtorapp->verifyLogin();
 <body>
     <main>
         <nav id="menu">
+            <div id="homeButtonContainer">
+                <a href="management_homepage.php" id="home">Home</a>
+            </div>
             <ul>
                 <li id="addProperty"><a href="">+ Add property</a></li>
                 <li id="logout"><a href="main.php?action=logout">Logout</a></li>

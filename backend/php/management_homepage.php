@@ -26,10 +26,10 @@ if (($_GET["error"] ?? "") === "admin_required") {
     <link rel="stylesheet" href="../../css/vendor/bootstrap-icons-v1.13.1/bootstrap-icons.css">
     <link rel="stylesheet" href="../css/management_homepage.css">
 
-    <link rel="apple-touch-icon" sizes="180x180" href="/wordpress/realtorapp/apple-touch-icon.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="/wordpress/realtorapp/favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="/wordpress/realtorapp/favicon-16x16.png">
-    <link rel="manifest" href="/wordpress/realtorapp/site.webmanifest">
+    <link rel="apple-touch-icon" sizes="180x180" href="../../img/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="../../img/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="../../img/favicon-16x16.png">
+    <link rel="manifest" href="../../img/site.webmanifest">
 
     <script src="../../js/jquery-3.7.1.js"></script>
 </head>
@@ -60,3 +60,5 @@ if (($_GET["error"] ?? "") === "admin_required") {
 </body>
 
 </html>
+
+

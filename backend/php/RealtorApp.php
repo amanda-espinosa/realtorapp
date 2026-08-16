@@ -263,7 +263,7 @@ class RealtorApp
         }
     }
 
-    public function createUser($email, $username, $password, $role)
+    public function createUser($email, $password, $username, $role)
     {
         try {
             $pdo = $this->getPdoInstance();
@@ -657,24 +657,41 @@ class RealtorApp
         $rememberDuration = $remember ? 60 * 60 * 24 * 30 : null;
 
         try {
-            $auth->login($email, $password, $rememberDuration);
-
-            return [
-                "success" => true,
-                "message" => "Login successful",
-            ];
-        } catch (\Delight\Auth\InvalidEmailException $e) {
-            return ["success" => false, "message" => "Wrong email address"];
-        } catch (\Delight\Auth\InvalidPasswordException $e) {
-            return ["success" => false, "message" => "Wrong password"];
-        } catch (\Delight\Auth\EmailNotVerifiedException $e) {
-            return ["success" => false, "message" => "Email not verified"];
-        } catch (\Delight\Auth\TooManyRequestsException $e) {
-            return [
-                "success" => false,
-                "message" => "Too many login attempts. Try again later",
-            ];
-        }
+               $auth->login($email, $password, $rememberDuration);
+       
+               return [
+                   "success" => true,
+                   "message" => "Login successful",
+               ];
+       
+           } catch (\Delight\Auth\InvalidEmailException $e) {
+       
+               return [
+                   "success" => false,
+                   "error" => "invalid",
+               ];
+       
+           } catch (\Delight\Auth\InvalidPasswordException $e) {
+       
+               return [
+                   "success" => false,
+                   "error" => "invalid",
+               ];
+       
+           } catch (\Delight\Auth\EmailNotVerifiedException $e) {
+       
+               return [
+                   "success" => false,
+                   "error" => "not-verified",
+               ];
+       
+           } catch (\Delight\Auth\TooManyRequestsException $e) {
+       
+               return [
+                   "success" => false,
+                   "error" => "too-many-attempts",
+               ];
+           }
     }
 
     public function logout()
@@ -746,7 +763,7 @@ class RealtorApp
     {
         $pdo = $this->getPdoInstance();
         $auth = new \Delight\Auth\Auth($pdo);
-
+        
         try {
             $userId = $auth->register(
                 $email,
@@ -759,13 +776,13 @@ class RealtorApp
                     ];
                 }*/
             );
-
+            
             $usersCount = $pdo->query("SELECT COUNT(*) FROM users")->fetchColumn();
-
+            
             if ($usersCount == 1) {
                 $auth->admin()->addRoleForUserById($userId,\Delight\Auth\Role::ADMIN);
             }
-
+            
             return [
                 "success" => true,
                 "userId" => $userId /*,
@@ -808,37 +825,65 @@ class RealtorApp
             "users" => $users,
         ];
     }
-
-    public function sendForm($name, $email, $phone, $appointment, $comments)
-    {
+    
+    public function sendForm($name, $email, $phone, $appointment, $comments) {
+        $name = trim($name);
+        $email = trim($email);
+        $phone = trim($phone);
+        $appointment = trim($appointment);
+        $comments = trim($comments);
+    
+        if ($name === "" || $email === "" || $comments === "") {
+            return json_encode([
+                "success" => false,
+                "error" => "Please complete all required fields."
+            ]);
+        }
+    
+        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            return json_encode([
+                "success" => false,
+                "error" => "Please enter a valid email address."
+            ]);
+        }
+    
+        if (
+            strlen($name) > 100 ||
+            strlen($email) > 254 ||
+            strlen($phone) > 50 ||
+            strlen($appointment) > 100 ||
+            strlen($comments) > 5000
+        ) {
+            return json_encode([
+                "success" => false,
+                "error" => "One or more fields are too long."
+            ]);
+        }
+    
+        $messageBody =
+            "Name: {$name}\n" .
+            "Email: {$email}\n" .
+            "Phone: {$phone}\n" .
+            "Appointment: {$appointment}\n\n" .
+            "Comments:\n{$comments}";
+    
         $mail = new PHPMailer(true);
-
-        /*$name = trim($_POST["name"]);
-        $email = filter_var($_POST["email"], FILTER_VALIDATE_EMAIL);
-        $phone = trim($_POST["phone"]);
-        $comments = trim($_POST["comments"]);
-        $appointment = trim($_POST["appointment"]);*/
-        $messageBody = "Name: $name\nEmail: $email\nPhone: $phone\nAppointment: $appointment\n\n$comments";
-
+    
         try {
-            $mail->isSMTP(); //Send using SMTP
+            $mail->isSMTP();
             $mail->Host = $this->settings["SMTP"]["host"];
             $mail->Port = $this->settings["SMTP"]["port"];
-            $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS; //Enable implicit TLS encryption
-
-            $mail->SMTPAuth = true; //Enable SMTP authentication
+            $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+            $mail->SMTPAuth = true;
             $mail->AuthType = "XOAUTH2";
-            $mail->Username = $this->settings["SMTP"]["username"]; //SMTP username
-            //Server settings
-            $mail->SMTPDebug = SMTP::DEBUG_SERVER; //Enable verbose debug output
-
-            //$mail->Password   = $this->settings['SMTP']['password'];                 //SMTP password
-
+            $mail->Username = $this->settings["SMTP"]["username"];
+            $mail->SMTPDebug = SMTP::DEBUG_OFF;
+    
             $provider = new Google([
                 "clientId" => $this->settings["SMTP"]["clientid"],
                 "clientSecret" => $this->settings["SMTP"]["clientsecret"],
             ]);
-
+    
             $mail->setOAuth(
                 new OAuth([
                     "provider" => $provider,
@@ -846,57 +891,40 @@ class RealtorApp
                     "clientSecret" => $this->settings["SMTP"]["clientsecret"],
                     "refreshToken" => $this->settings["SMTP"]["refreshtoken"],
                     "userName" => $this->settings["SMTP"]["username"],
-                ]),
+                ])
             );
-
+    
             $mail->setFrom(
-                $this->settings["SMTP"]["username"],
-                "Amanda Espinosa",
+                $this->settings["SMTP"]["username"]
             );
-            $mail->addAddress("egweminiyo@gmail.com");
-            //TCP port to connect to; use 587 if you have set `SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS`
-
-            //Recipients
-            //$mail->setFrom(filter_var($_POST["email"], FILTER_VALIDATE_EMAIL), 'Mailer');
-            //$mail->addAddress($email, $name);     //Add a recipient
-            //$mail->addAddress('ellen@example.com');               //Name is optional
-            //$mail->addReplyTo('info@example.com', 'Information');
-            //$mail->addCC('cc@example.com');
-            //$mail->addBCC('bcc@example.com');
-
-            //Attachments
-            //$mail->addAttachment('/var/tmp/file.tar.gz');         //Add attachments
-            //$mail->addAttachment('/tmp/image.jpg', 'new.jpg');    //Optional name
-
-            //Content
-            $mail->isHTML(true); //Set email format to HTML
-            $mail->Subject = "Message from RealtorApp Web Form";
-            $mail->Body = $messageBody;
-            $mail->AltBody = $messageBody;
+    
+            $mail->addAddress(
+                $this->settings["SMTP"]["username"]
+            );
+    
+            $mail->addReplyTo($email, $name);
             $mail->CharSet = PHPMailer::CHARSET_UTF8;
-
+            $mail->isHTML(false);
+            $mail->Subject = "New message from RealtorApp";
+            $mail->Body = $messageBody;
             $mail->send();
-            return json_encode(["success" => true, "error" => ""]);
+    
+            return json_encode([
+                "success" => true,
+                "error" => ""
+            ]);
+    
         } catch (Exception $e) {
+    
+            error_log("PHPMailer error: " . $mail->ErrorInfo);
+    
             return json_encode([
                 "success" => false,
-                "error" => "Message could not be sent. Mailer Error: {$mail->ErrorInfo}",
+                "error" => "Message could not be sent. Please try again later."
             ]);
         }
-        /*
-        $to = "amaramosespinosa@gmail.com";
-        $subject = "New Contact from customer $name, ID property: $idProperty";
-
-        $headers = "From: amaramosespinosa@gmail.com\r\n";
-        $headers .= "Reply-To: $email\r\n";
-
-        if (mail($to, $subject, $message, $headers)) {
-            echo "Thank you! Your message was sent.";
-        } else {
-            echo "Sorry, there was an error sending your message.";
-        }*/
     }
-
+    
     public function updateCoordinates($id, $latitude, $longitude)
     {
         $this->connectDatabase();
@@ -976,3 +1004,6 @@ class RealtorApp
     }
 }
 ?>
+
+
+

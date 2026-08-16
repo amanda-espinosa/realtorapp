@@ -28,13 +28,14 @@ async function init() {
         const email = document.getElementById("email").value.trim();
         const username = document.getElementById("username").value.trim();
         const password = document.getElementById("password").value;
-
+        
         const body = new URLSearchParams({
+          //action: "registerUser",
           email,
           username,
           password,
         });
-
+        
         try {
           const response = await fetch("../php/main.php?action=registerUser", {
             method: "POST",
@@ -43,7 +44,7 @@ async function init() {
             },
             body,
           });
-
+        
           const resp = await response.json();
           console.log(resp);
           if (resp.success) {
@@ -54,6 +55,11 @@ async function init() {
           } else {
               showNotification("Could not register user.", "danger");
           }
+
+            /*"success" => true,
+                            "userId" => $userId,
+                            "verification" => $registerToken ?? null */
+          
         } catch (error) {
           console.error("Registration failed:", error);
         }
