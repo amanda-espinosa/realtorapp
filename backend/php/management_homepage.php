@@ -1,3 +1,4 @@
+<?php
 /*
  * RealtorApp
  * Copyright (C) 2026 Amanda Espinosa Ramos
@@ -17,7 +18,6 @@
  * along with RealtorApp. If not, see <https://www.gnu.org/licenses/>.
  */
 
-<?php
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
@@ -79,5 +79,6 @@ if (($_GET["error"] ?? "") === "admin_required") {
 </body>
 
 </html>
+
 
 

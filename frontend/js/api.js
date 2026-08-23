@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with RealtorApp. If not, see <https://www.gnu.org/licenses/>.
  */
-
+ 
 const api = {
     previewContentUrl: "../../backend/php/main.php?action=getPropertyList",
     numberOfHouses: 8,

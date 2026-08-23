@@ -114,10 +114,6 @@ nav {
   padding: 2em;
 }
 
-#mapAndForm {
-  height: 50em;
-}
-
 #property {
   width: 85%;
   background: var(--glass-bg);
@@ -212,3 +208,4 @@ nav {
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
 }
+

@@ -1,3 +1,4 @@
+<?php
 /*
  * RealtorApp
  * Copyright (C) 2026 Amanda Espinosa Ramos
@@ -16,8 +17,7 @@
  * You should have received a copy of the GNU General Public License
  * along with RealtorApp. If not, see <https://www.gnu.org/licenses/>.
  */
-
-<?php
+ 
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
@@ -138,3 +138,4 @@ $realtorapp->verifyAdmin();
 </body>
 
 </html>
+

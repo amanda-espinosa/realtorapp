@@ -1,3 +1,4 @@
+<?php
 /*
  * RealtorApp
  * Copyright (C) 2026 Amanda Espinosa Ramos
@@ -16,8 +17,7 @@
  * You should have received a copy of the GNU General Public License
  * along with RealtorApp. If not, see <https://www.gnu.org/licenses/>.
  */
-
-<?php
+ 
 // Absolute path to the json settings file.
 $settingsPath = "/var/www/RealtorAppSettings.json";
 ?>

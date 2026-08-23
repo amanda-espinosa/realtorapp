@@ -33,3 +33,4 @@ iframe.style.minHeight = "100vh";
 iframe.frameBorder = "0";
 
 appContainer.appendChild(iframe);
+

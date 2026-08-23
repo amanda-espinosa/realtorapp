@@ -8,8 +8,8 @@
  * See the LICENSE file in the project root for the complete
  * license terms.
  */
- 
-@font-face {
+
+ @font-face {
     font-family: "Sedan";
     src: url("../../frontend/fonts/Sedan/Sedan-Regular.ttf") format("truetype");
     font-weight: 400;
@@ -168,3 +168,5 @@ input[type=password] {
   opacity: 1;
   visibility: visible;
 }
+
+

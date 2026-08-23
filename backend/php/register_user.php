@@ -1,3 +1,4 @@
+<?php
 /*
  * RealtorApp
  * Copyright (C) 2026 Amanda Espinosa Ramos
@@ -17,7 +18,6 @@
  * along with RealtorApp. If not, see <https://www.gnu.org/licenses/>.
  */
 
-<?php
 require_once __DIR__ . "/main.php";
 $users = $realtorapp->requestUsers();
 if (!empty($users["users"])) {
@@ -70,5 +70,6 @@ if (!empty($users["users"])) {
 </body>
 
 </html>
+
 
 

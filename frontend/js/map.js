@@ -51,17 +51,17 @@ const map = {
             attribution: '&copy; OpenStreetMap'
         }).addTo(generalMap);
 
-        markerLayer = L.layerGroup().addTo(generalMap);
+        this.markerLayer = L.layerGroup().addTo(generalMap);
     },
 
     clearMarkers: function () {
-        if (markerLayer) markerLayer.clearLayers();
+        if (this.markerLayer) this.markerLayer.clearLayers();
     },
 
     addHouseMarker: function (house, lat, lng) {
-        if (!markerLayer) return;
+        if (!this.markerLayer) return;
         L.marker([Number(lat), Number(lng)])
-            .addTo(markerLayer)
+            .addTo(this.markerLayer)
             .bindPopup(`<b>${house.address_street ?? ""}</b><br>${house.address_city ?? ""}`);
     },
 
@@ -135,3 +135,4 @@ const map = {
         return propertyMap;
     }
 };
+
