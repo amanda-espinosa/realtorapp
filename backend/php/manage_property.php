@@ -49,10 +49,10 @@ $realtorapp->verifyLogin();
     <link href="../../css/filepond.min.css" rel="stylesheet">
     <link href="../../css/filepond-plugin-image-preview.min.css" rel="stylesheet">
 
-    <link rel="apple-touch-icon" sizes="180x180" href="../../img/apple-touch-icon.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="../../img/favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="../../img/favicon-16x16.png">
-    <link rel="manifest" href="../../img/site.webmanifest">
+    <link rel="apple-touch-icon" sizes="180x180" href="../../apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="../../favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="../../favicon-16x16.png">
+    <link rel="manifest" href="../../site.webmanifest">
 
 
     <script src="../../js/jquery-3.7.1.js"></script>
