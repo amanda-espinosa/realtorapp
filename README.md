@@ -296,12 +296,7 @@ Add the following container:
 Then load the RealtorApp injector script:
 
 ```html
-<script>
-    let script = document.createElement("script");
-    script.src = "realtorapp/frontend/js/app-injector.js";
-    script.type = "text/javascript";
-    document.head.appendChild(script);
-</script>
+<script src="realtorapp/frontend/js/app-injector.js"></script>
 ```
 
 This loads the RealtorApp frontend into the designated container.
