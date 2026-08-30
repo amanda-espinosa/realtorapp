@@ -74,12 +74,6 @@ The resulting directory structure should begin as follows:
     └── ...
 ```
 
-The application should then be accessible at:
-
-```text
-https://yourdomain.com/realtorapp/
-```
-
 Set the appropriate ownership and permissions for the application files.
 
 For example, on an Apache installation using the `www-data` user:
